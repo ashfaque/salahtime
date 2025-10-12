@@ -1,0 +1,29 @@
+{
+    // --- JAVASCRIPT/TYPESCRIPT SETTINGS (for apps/frontend) ---
+    "[javascript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "[typescript]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+    "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.formatOnSave": true
+    },
+
+    // --- GENERAL SETTINGS ---
+    "files.exclude": {
+      "**/.git": true,
+      "**/.svn": true,
+      "**/.hg": true,
+      "**/CVS": true,
+      "**/.DS_Store": true,
+      "**/Thumbs.db": true,
+      "**/node_modules": true,  // Exclude node_modules from file explorer
+      "**/.next": true  // Next.js build output
+    },
+    // --- PROJECT-SPECIFIC SETTINGS ---
+    "files.autoSave": "off" // Disable auto save for this project only
+}

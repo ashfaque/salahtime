@@ -71,3 +71,22 @@ pnpm install
 | **Update packages**| `npm update` | `pnpm update` |
 
 ---
+
+## Naming Conventions in the App Router of Next.js
+This table breaks down what **must** be named a certain way (Strict) versus what you can name yourself (Flexible).
+
+| Category | Convention (The "Thing") | The Strict Rule 📏 | Example / Purpose 💡 | Flexibility? (Your Code) 🧑‍💻 |
+| :--- | :--- | :--- | :--- | :--- |
+| **UI Files** 🖥️ | `page.tsx` | File *must* be named `page.tsx`. | **Makes a route public.** `app/about/page.tsx` → `/about` | **Flexible.** `export default function MyAboutPage()` |
+| | `layout.tsx` | File *must* be named `layout.tsx`. | **Creates a shared, persistent UI "frame".** Must accept `children`. | **Flexible.** `export default function MainLayout({ children })` |
+| | `loading.tsx` | File *must* be named `loading.tsx`. | **Automatic loading UI** (spinner, skeleton) for the route. | **Flexible.** `export default function MySpinner()` |
+| | `error.tsx` | File *must* be named `error.tsx`. Must be a Client Component (`'use client'`). | **Automatic error boundary.** Catches errors in the route. | **Flexible.** `export default function MyErrorUI({ error, reset })` |
+| | `not-found.tsx` | File *must* be named `not-found.tsx`. | **Shows a 404 page.** Triggered by `notFound()` or a bad URL. | **Flexible.** `export default function MyCustom404()` |
+| | `template.tsx` | File *must* be named `template.tsx`. | **Rarely used.** Like a layout, but *re-mounts* on every navigation. | **Flexible.** `export default function MyTemplate({ children })` |
+| | `default.tsx` | File *must* be named `default.tsx`. (Advanced) | **Fallback UI** for Parallel Routes on initial load. | **Flexible.** `export default function MySlotFallback()` |
+| **Routing Folders** 📁 | `[folderName]` | Folder name *must* be in `[brackets]`. | **Dynamic Segment.** `app/blog/[slug]` → `/blog/post-1` | **Flexible.** The name inside (`slug`, `id`) becomes your `params` prop key. |
+| | `(folderName)` | Folder name *must* be in `(parentheses)`. | **Route Group.** Organizes files *without* affecting the URL. `app/(marketing)/about` → `/about` | **Flexible.** The name inside (`marketing`, `shop`) is just for you. |
+| | `_folderName` | Folder name *must* start with `_`. | **Private Folder.** Opts the folder *out* of routing. `app/_components/Button.tsx` → (Not a URL) | **Flexible.** The name after the `_` (`_components`, `_lib`) is up to you. |
+| | `@folderName` | Folder name *must* start with `@`. (Advanced) | **Parallel Route Slot.** Renders another page in the same layout. | **Flexible.** The name after `@` (`@modal`, `@team`) becomes a prop in `layout.tsx`. |
+| **API Logic** ⚡ | `route.ts` | File *must* be named `route.ts` (or `.js`). | **Creates a backend API endpoint,** not a UI page. | **Not Flexible.** This filename is the rule. |
+| | `GET`, `POST`, `DELETE`, ... | Function names *inside* `route.ts`. | **Named exports** that match HTTP verbs. | **Not Flexible at All.** You *must* use `export async function GET()` etc. **No `default` export!** |

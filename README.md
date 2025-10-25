@@ -52,3 +52,22 @@ git submodule update
 Replace `<repository-url>` with the actual URL of your repository.
 
 ---
+
+## Migrating from `npm` to `pnpm`
+If you are migrating from `npm` to `pnpm`, follow these steps:
+```bash
+rm -rf node_modules
+git rm package-lock.json
+pnpm install
+```
+
+| Action | Old `npm` Command | ✅ New `pnpm` Command |
+| :--- | :--- | :--- |
+| **Run your app** | `npm run dev` | `pnpm run dev` (or just `pnpm dev`) |
+| **Install a package** | `npm install react` | `pnpm add react` |
+| **Install dev package**| `npm install -D tailwindcss` | `pnpm add -D tailwindcss` |
+| **Uninstall a package**| `npm uninstall react` | `pnpm remove react` |
+| **Install all packages**| `npm install` | `pnpm install` |
+| **Update packages**| `npm update` | `pnpm update` |
+
+---

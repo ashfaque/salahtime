@@ -34,3 +34,21 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+---
+
+## To clone the repository
+
+```bash
+git clone --recurse-submodules <repository-url>
+```
+
+If you have already cloned the repository without the `--recurse-submodules` flag, you can initialize and update the submodules with the following commands:
+
+```bash
+git submodule init
+git submodule update
+```
+Replace `<repository-url>` with the actual URL of your repository.
+
+---

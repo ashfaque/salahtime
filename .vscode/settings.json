@@ -25,5 +25,5 @@
       "**/.next": true  // Next.js build output
     },
     // --- PROJECT-SPECIFIC SETTINGS ---
-    "files.autoSave": "off" // Disable auto save for this project only
+    "files.autoSave": "off"  // Disable auto save for this project only
 }

@@ -9,7 +9,8 @@
             "name": "Frontend: Debug Next.js",
             "type": "node-terminal",
             "request": "launch",
-            "command": "npm run dev",
+            // "command": "npm run dev",
+            "command": "pnpm dev",
             "cwd": "${workspaceFolder}",
             "serverReadyAction": {
                 "pattern": "started server on .+, url: (https?://.+)",

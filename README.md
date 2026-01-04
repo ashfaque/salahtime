@@ -120,3 +120,51 @@ This project uses a frontend-only Next.js architecture. API keys are exposed to 
 
 ---
 
+## Project Directory Structure for Next.js App Router - Best Practices
+
+```
+my-app/
+├── public/                 # Static assets (images, fonts, favicon)
+│   └── images/             # (Move your icons/images here)
+├── src/
+│   ├── app/                # ROUTING ONLY. Keep this folder minimal.
+│   │   ├── layout.tsx      # Root layout
+│   │   ├── page.tsx        # Home page/Landing page
+│   │   └── (auth)/         # Group routes logically (e.g., login, register)
+│   │       └── login/
+│   │           └── page.tsx
+│   ├── components/         # SHARED UI Components, has `tsx` files.
+│   │   ├── ui/             # "Dumb" primitives (Buttons, Inputs, Cards), take it as a **Brick**.
+│   │   └── layout/         # Structural components (Navbar, Footer, Sidebar), take it as a **Wall**.
+│   ├── modules/           # THE PRO MOVE: Business Logic groupings, has both `tsx` & `ts` files.
+│   │   ├── auth/           # All code related to Auth
+│   │   │   ├── components/ # LoginForm.tsx, SignupButton.tsx
+│   │   │   └── hooks/      # useAuth.ts
+│   │   └── dashboard/      # All code related to Dashboard
+│   ├── lib/                # Utilities & Configurations, has `ts` files.
+│   │   ├── utils.ts        # Helper functions (class mergers, date formatters)
+│   │   └── constants.ts    # Global static variables
+│   └── types/              # TypeScript Interfaces/Types
+│       └── global.d.ts
+├── .env                    # Environment variables (API Keys)
+└── package.json
+```
+
+### Naming Conventions
+- **Folders:** `kebab-case` (e.g., `user-profile`, `data-fetching`)
+- **Files:** `PascalCase` for components [tsx] (e.g., `UserProfile.tsx`), `camelCase` for utilities [ts] (e.g., `dataFetcher.ts`)
+
+| Directory / Context | Element Type | Naming Case | Example | Reasoning |
+| --- | --- | --- | --- | --- |
+| **`src/app/`** | **Route Folders** | **kebab-case** | `dashboard`, `contact-us`, `blog-posts` | These folders become your URL. URLs should always be lowercase and hyphenated for SEO and server safety. |
+|  | **Next.js Files** | **camelCase** (Fixed) | `page.tsx`, `layout.tsx`, `loading.tsx` | Strictly defined by Next.js framework. You cannot change these names. |
+| **`src/components/`** | **Grouping Folders** | **kebab-case** | `ui`, `layout`, `form-elements` | Keeps folders distinct from the Component files inside them. |
+|  | **Component Files** | **PascalCase** | `Button.tsx`, `Navbar.tsx`, `HeroSection.tsx` | **Strict Rule:** React components *must* start with a capital letter to work. |
+| **`src/modules/`** | **Feature Folders** | **kebab-case** | `prayer-times`, `user-auth` | Consistency with other directory names. |
+|  | **Component Files** | **PascalCase** | `PrayerCard.tsx`, `PrayerGrid.tsx` | Because they return UI (JSX). |
+|  | **Hook Files** | **camelCase** | `usePrayerTimes.ts` | Custom hooks strictly follow the `use...` prefix standard. |
+|  | **Type/Logic Files** | **camelCase** | `types.ts`, `helpers.ts`, `apiClient.ts` | Standard JavaScript/TypeScript variable naming. |
+| **`src/lib/`** | **Utility Files** | **camelCase** | `utils.ts`, `constants.ts`, `stripeApi.ts` | Functions and instances are usually camelCase. |
+| **General** | **Constants** | **UPPER_SNAKE_CASE** | `MAX_USERS`, `API_KEY` | Inside `.ts` files, use this for variables that are hardcoded and never change. |
+
+---

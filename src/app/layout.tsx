@@ -13,10 +13,14 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Salah Timetable",
-  description: "A simple app to view Islamic prayer times.",
+  title: {
+    template: "%s | Salah Timetable", // ? %s is replaced by the specific page title
+    default: "Salah Timetable", // Used if a page doesn't define its own title
+  },
+  description: "A simple app to view Islamic prayer times based on your location.",
 };
 
+// ? SYNTAX: function RootLayout(VARIABLE: TYPE_HINT) { ... }
 export default function RootLayout({
   children,
 }: Readonly<{

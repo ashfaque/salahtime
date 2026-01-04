@@ -102,3 +102,21 @@ This table breaks down what **must** be named a certain way (Strict) versus what
 | **Internal Folder URL?** | `my-app.com/models/` → **404** | `my-app.com/_components/` → **404** | **This is safe.** You can have `app/_components/Button.tsx` and `app/dashboard/page.tsx` side-by-side. You `import` the button; it *never* becomes a URL. |
 | **State Management** | State lives on the object (`self.user`, `this.state`). | State is decoupled from the UI via Hooks (`useState`, `useReducer`). | **1. Local State:** Use `useState` for state inside one component (e.g., "is modal open?"). <br> **2. Global State:** Use a store like **Zustand** for state needed everywhere (e.g., "current user"). It's simple and avoids "prop drilling." |
 | **Backend / Business Logic** | Everything is a `class` (Views, Serializers, Services). | API endpoints are functions (`export async function GET()`). | **Use OOP for server-side logic\!** This is the "best of both worlds." Create a `class UserService` in `app/_features/users/lib/service.ts` and `import` it into your Server Components or `route.ts` files to handle complex database logic. |
+
+---
+
+## Environment Variables for Next.js (Frontend Only)
+Next.js requires you to prefix your environment variables with `NEXT_PUBLIC_` to make them accessible on the frontend. Else they will only be available on the server side. And when used in the frontend, will return `undefined`.
+
+This project uses a frontend-only Next.js architecture. API keys are exposed to the browser, so strict security measures are required.
+
+| Phase | Location | Naming Convention | Action Required |
+| --- | --- | --- | --- |
+| **Local Dev** | `.env.local` | `NEXT_PUBLIC_API_KEY=value` | **Do not commit.** Add this file to `.gitignore`. |
+| **Code Usage** | `src/...` | `process.env.NEXT_PUBLIC_API_KEY` | Must use `NEXT_PUBLIC_` prefix to be visible in browser. |
+| **Prod (Store)** | GitHub Repo → Settings → Secrets | Name: `NEXT_PUBLIC_API_KEY` | Paste the raw key value here. |
+| **Prod (Build)** | `.github/workflows/deploy.yml` | `env:` section | Map the secret to the variable (see snippet below). |
+| **Security** | **External API Dashboard** | N/A | **Mandatory:** Restrict key usage to `your-username.github.io`. |
+
+---
+

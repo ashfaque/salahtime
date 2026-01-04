@@ -4,22 +4,41 @@
 /* @tailwind components; */
 /* @tailwind utilities; */
 
-:root {
-  /* Light Mode (Default) */
-  --background: #ffffff;
-  --foreground: #171717;
-
+@theme {
   /* Font Definitions */
-  --font-sans: var(--font-geist-sans);  /* ? Comes from layout.tsx */
-  --font-mono: var(--font-geist-mono);  /* ? Comes from layout.tsx */
+  --font-sans: var(--font-geist-sans); /* ? Comes from layout.tsx */
+  --font-mono: var(--font-geist-mono); /* ? Comes from layout.tsx */
 }
 
+:root {
+  /* Light Mode (Default) */
+  --background: #ededed;
+  --foreground: #0a0a0a;
+}
+
+/* This applies if: 
+   A) The user has the '.dark' class on the HTML tag (Manual Override)
+   OR 
+   B) The system is dark AND they haven't manually picked light (System Default) 
+*/
 @media (prefers-color-scheme: dark) {
   :root {
     /* Dark Mode Overrides */
     --background: #0a0a0a;
     --foreground: #ededed;
   }
+}
+
+/* Force Dark Mode when the class is present */
+.dark {
+  --background: #0a0a0a;
+  --foreground: #ededed;
+}
+
+/* Force Light Mode when the class is present */
+.light {
+  --background: #ededed;
+  --foreground: #0a0a0a;
 }
 
 /* Tailwind v4 Theme Configuration 
@@ -36,6 +55,6 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), Arial, Helvetica, sans-serif;  /* ? We registered more than one font as a fallback for different devices */
+  font-family: var(--font-sans), Arial, Helvetica, sans-serif; /* ? We registered more than one font as a fallback for different devices */
   /* ? Use tailwind class font-mono for monospace */
 }

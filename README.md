@@ -168,3 +168,27 @@ my-app/
 | **General** | **Constants** | **UPPER_SNAKE_CASE** | `MAX_USERS`, `API_KEY` | Inside `.ts` files, use this for variables that are hardcoded and never change. |
 
 ---
+
+## 🛠️ How to Test "Location Popup" on Mobile (Localhost)
+
+You cannot use the IP address directly. You have two options to see the popup working before you deploy:
+
+#### Option A: Use a Tunnel (Easiest & Best)
+
+This gives you a temporary `https://` link to your local PC.
+
+1. Open your VS Code terminal.
+2. Run: `npx localtunnel --port 3000` (or use `ngrok` if you have it).
+3. It will give you a URL like `https://somename.loca.lt`.
+4. Open **THAT** link on your phone.
+5. **Result:** Since it is HTTPS, the Location Popup **will appear** immediately.
+
+#### Option B: USB Debugging (Chrome)
+
+1. Connect phone to PC via USB.
+2. On PC Chrome, go to `chrome://inspect/#devices`.
+3. Enable **Port Forwarding** (Port 3000 -> localhost:3000).
+4. On your phone, open `http://localhost:3000`.
+5. **Result:** The phone treats `localhost` as secure, so the popup **will appear**.
+
+---

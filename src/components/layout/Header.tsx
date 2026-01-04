@@ -5,12 +5,22 @@ import { getTimezoneShort, formatInputDate } from "@/lib/date-utils";
 import { useRef } from "react";
 import { useTheme } from "@/modules/prayer/hooks/useTheme";
 
+// interface HeaderProps {
+//   currentDate?: Date;
+//   onDateChange?: (date: Date) => void;
+// }
+
+// export function Header({ currentDate, onDateChange }: HeaderProps) {
+
 interface HeaderProps {
   currentDate?: Date;
   onDateChange?: (date: Date) => void;
+  // NEW: We need these to control the status badge
+  locationSource?: "default" | "ip" | "gps";
+  onRetryLocation?: () => void;
 }
 
-export function Header({ currentDate, onDateChange }: HeaderProps) {
+export function Header({ currentDate, onDateChange, locationSource, onRetryLocation }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const dateInputRef = useRef<HTMLInputElement>(null);
 
@@ -55,9 +65,22 @@ export function Header({ currentDate, onDateChange }: HeaderProps) {
         </div>
 
         {/* Dynamic Timezone Badge */}
-        <div className="px-3 py-1 border border-foreground/20 rounded-full text-xs font-bold tracking-wide text-foreground/70 cursor-help" title="Your detected timezone">
-          {getTimezoneShort()}
-        </div>
+        {/* SMART LOCATION BADGE */}
+        {locationSource === "gps" ? (
+          // Case A: We have perfect GPS. Show Timezone calmly.
+          <div className="px-3 py-1 border border-green-500/20 bg-green-500/5 text-green-600 dark:text-green-400 rounded-full text-xs font-bold tracking-wide flex items-center gap-1">
+            <span>📍</span> {getTimezoneShort()}
+          </div>
+        ) : (
+          // Case B: We are on IP or Default. Show "Enable GPS" button politely.
+          <button
+            onClick={onRetryLocation}
+            className="px-3 py-1 bg-blue-500/10 border border-blue-500/20 text-blue-500 rounded-full text-xs font-bold animate-pulse hover:bg-blue-500/20 transition-colors flex items-center gap-1"
+            title="Click to enable precise location"
+          >
+            <span>📡</span> {locationSource === "ip" ? "Approx Loc" : "Enable GPS"}
+          </button>
+        )}
       </div>
 
       {/* 3. Dark Mode Toggle */}

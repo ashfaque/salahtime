@@ -17,16 +17,30 @@ export function LocationBadge({ coords, source, loading }: Props) {
     let mounted = true;
     const controller = new AbortController();
 
+    function resolveLatLon(c: Coordinates) {
+      const u = c as unknown;
+      if (typeof u === "object" && u !== null) {
+        const r = u as Record<string, unknown>;
+        const maybeLat = r.latitude ?? r.lat;
+        const maybeLon = r.longitude ?? r.lon ?? r.lng;
+
+        const lat = typeof maybeLat === "number" ? maybeLat : typeof maybeLat === "string" ? Number(maybeLat) : NaN;
+        const lon = typeof maybeLon === "number" ? maybeLon : typeof maybeLon === "string" ? Number(maybeLon) : NaN;
+
+        if (!Number.isNaN(lat) && !Number.isNaN(lon)) return { lat, lon };
+      }
+      return null;
+    }
+
     async function fetchName() {
       setFetching(true);
       try {
-        const lat = (coords as any).latitude ?? (coords as any).lat;
-        const lon = (coords as any).longitude ?? (coords as any).lon ?? (coords as any).lng;
+        const resolved = resolveLatLon(coords);
+        if (!resolved) throw new Error("No valid coordinates");
+        const { lat, lon } = resolved;
 
         // Use Nominatim reverse geocoding (no API key). Keep it simple for UX purposes.
-        const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(
-          lat
-        )}&lon=${encodeURIComponent(lon)}&zoom=10&addressdetails=1`;
+        const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&zoom=10&addressdetails=1`;
 
         const res = await fetch(url, { signal: controller.signal, headers: { Accept: "application/json" } });
         if (!res.ok) throw new Error("Reverse geocode failed");
@@ -53,15 +67,16 @@ export function LocationBadge({ coords, source, loading }: Props) {
     }
 
     // Only fetch if coords exist
-    if (coords && (coords as any).latitude != null && (coords as any).longitude != null) {
-      fetchName();
+    if (coords) {
+      const resolved = resolveLatLon(coords);
+      if (resolved) fetchName();
     }
 
     return () => {
       mounted = false;
       controller.abort();
     };
-  }, [coords?.latitude, coords?.longitude]);
+  }, [coords]);
 
   if (loading) return null;
 
@@ -73,9 +88,7 @@ export function LocationBadge({ coords, source, loading }: Props) {
           <path strokeLinecap="round" strokeLinejoin="round" d="M21 12c0 5-9 10-9 10S3 17 3 12a9 9 0 1118 0z" />
         </svg>
 
-        <span className="leading-none">
-          {name ?? (fetching ? "Detecting location..." : "Unknown location")}
-        </span>
+        <span className="leading-none">{name ?? (fetching ? "Detecting location..." : "Unknown location")}</span>
 
         <span className="ml-2 text-[10px] text-foreground/60">{source}</span>
       </div>

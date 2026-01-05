@@ -20,6 +20,7 @@ const nextConfig: NextConfig = {
   },
   assetPrefix: assetPrefix,
   basePath: basePath,
+  trailingSlash: true,
 };
 
 export default nextConfig;

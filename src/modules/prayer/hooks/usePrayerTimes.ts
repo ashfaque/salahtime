@@ -1,12 +1,20 @@
 import { useState, useEffect } from "react";
 import { Coordinates, CalculationMethod, PrayerTimes, Madhab } from "adhan";
+import { getTimeRemaining } from "@/lib/date-utils";
+
+// Strongly-typed prayer item used across the hook
+interface PrayerItem {
+  name: string;
+  time: Date;
+  isSecondary?: boolean;
+}
 
 export function usePrayerTimes(date: Date, coords: Coordinates) {
   // STATE DEFINITIONS
-  const [prayerData, setPrayerData] = useState<any>(null);
-  const [nextPrayer, setNextPrayer] = useState<any>(null);
+  const [prayerData, setPrayerData] = useState<PrayerItem[] | null>(null);
+  const [nextPrayer, setNextPrayer] = useState<PrayerItem | null>(null);
   // To store the full current prayer object (e.g., { name: "Fajr", time: ... })
-  const [currentPrayer, setCurrentPrayer] = useState<any>(null);
+  const [currentPrayer, setCurrentPrayer] = useState<PrayerItem | null>(null);
   // Initialize with specific placeholder
   const [timeRemaining, setTimeRemaining] = useState("00:00:00");
   const [currentPrayerId, setCurrentPrayerId] = useState<string>("");
@@ -79,8 +87,6 @@ export function usePrayerTimes(date: Date, coords: Coordinates) {
   useEffect(() => {
     if (!nextPrayer?.time) return;
 
-    // Use 'require' to avoid dependency cycle issues
-    const { getTimeRemaining } = require("@/lib/date-utils");
     setTimeRemaining(getTimeRemaining(nextPrayer.time));
 
     const timer = setInterval(() => {

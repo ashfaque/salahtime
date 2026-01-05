@@ -15,6 +15,15 @@ const nextConfig: NextConfig = {
   /* config options here */
   // output: "export",  // Enable static export for GitHub Pages like Angular builds.
   output: isGithubActions ? "export" : undefined,
+  // Allow builds to succeed even if ESLint or TypeScript checks fail.
+  // NOTE: This disables enforcement during CI/builds — prefer fixing root causes.
+  // eslint: {
+  //   ignoreDuringBuilds: true,
+  // },
+  // typescript: {
+  //   // ⚠️ Allows production builds even with type errors. Use sparingly.
+  //   ignoreBuildErrors: true,
+  // },
   images: {
     unoptimized: true,
   },

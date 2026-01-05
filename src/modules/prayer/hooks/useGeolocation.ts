@@ -27,8 +27,8 @@ export function useGeolocation() {
         setSource("ip"); // Mark as IP data
         return new Coordinates(data.latitude, data.longitude);
       });
-    } catch (e) {
-      console.warn("Passive location failed, sticking to default.");
+    } catch (err) {
+      console.warn("Passive location failed, sticking to default.", err);
     } finally {
       // If we were waiting on this, stop loading
       if (source !== "gps") setLoading(false);
@@ -67,6 +67,8 @@ export function useGeolocation() {
   //   requestGPS();
   // }, []);
 
+  // Intentionally running on mount only; helpers are stable enough for one-shot usage
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
     // 1. ASK FOR GPS IMMEDIATELY (The "Ask Once" Logic)
     // We do this first so the popup appears instantly on load

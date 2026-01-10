@@ -43,7 +43,14 @@ export function PrayerHero({ date, setDate, nextPrayer, currentPrayer, timeRemai
   };
 
   // 3. Show Skeleton if we are in that 500ms window OR if data is missing
-  const showSkeleton = isLoading || !nextPrayer || timeRemaining === "00:00:00";
+  const isPastDate = (() => {
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const selected = new Date(date);
+    selected.setHours(0, 0, 0, 0);
+    return selected.getTime() < today.getTime();
+  })();
+  const showSkeleton = isLoading || !nextPrayer; //|| timeRemaining === "00:00:00";
 
   return (
     <div className="flex flex-col items-center justify-center gap-8 w-full max-w-md text-center relative animate-in fade-in zoom-in-95 duration-300">
@@ -63,11 +70,20 @@ export function PrayerHero({ date, setDate, nextPrayer, currentPrayer, timeRemai
       {/* Countdown Display */}
       {!showSkeleton && nextPrayer ? (
         <div className="space-y-2">
-          <p className="text-xl text-foreground/60">{currentPrayer ? `${currentPrayer.name} ends in:` : "Next Prayer in:"}</p>
-          <h1 className="text-6xl font-bold tracking-tight font-mono tabular-nums">{timeRemaining}</h1>
-          <p className="text-xl">
-            {nextPrayer.name} at {formatTime(nextPrayer.time)}
-          </p>
+          {isPastDate ? (
+            <div className="py-8 animate-in fade-in slide-in-from-bottom-2">
+              <p className="text-xl text-foreground/60 mb-2">Viewing Archive</p>
+              <h1 className="text-4xl font-bold tracking-tight opacity-50">Past Date</h1>
+            </div>
+          ) : (
+            <>
+              <p className="text-xl text-foreground/60">{currentPrayer ? `${currentPrayer.name} ends in:` : "Next Prayer in:"}</p>
+              <h1 className="text-6xl font-bold tracking-tight font-mono tabular-nums">{timeRemaining}</h1>
+              <p className="text-xl">
+                {nextPrayer.name} at {formatTime(nextPrayer.time)}
+              </p>
+            </>
+          )}
         </div>
       ) : (
         // SKELETON LOADER

@@ -6,9 +6,10 @@ import { Skeleton } from "@/components/ui/Skeleton";
 interface PrayerTableProps {
   prayers: { name: string; time: Date; isSecondary?: boolean }[] | null;
   currentPrayerId?: string;
+  date?: Date;
 }
 
-export function PrayerTable({ prayers, currentPrayerId }: PrayerTableProps) {
+export function PrayerTable({ prayers, currentPrayerId, date }: PrayerTableProps) {
   if (!prayers) return null; // Don't show anything if loading
 
   // Helper to scroll back up
@@ -20,9 +21,11 @@ export function PrayerTable({ prayers, currentPrayerId }: PrayerTableProps) {
     // document.getElementById("hero-section")?.scrollIntoView({ behavior: "smooth" });
   };
 
+  const isToday = date ? date.toDateString() === new Date().toDateString() : false;
+
   return (
     <div id="table-section" className="flex flex-col items-center justify-center w-full max-w-md relative pb-20">
-      {/* Scroll Up Button (Now Functional) */}
+      {/* Scroll Up Button */}
       <button onClick={scrollToTop} className="absolute -top-16 animate-bounce p-2 hover:bg-foreground/5 rounded-full">
         <ArrowUpIcon className="w-6 h-6 opacity-50" />
       </button>
@@ -35,7 +38,7 @@ export function PrayerTable({ prayers, currentPrayerId }: PrayerTableProps) {
             prayers.map((prayer) => {
               // Check if this row is the active one
               // Adhan returns lowercase (dhuhr), our names are Title Case (Dhuhr)
-              const isActive = currentPrayerId === prayer.name.toLowerCase();
+              const isActive = isToday && currentPrayerId === prayer.name.toLowerCase();
 
               return (
                 <div
@@ -51,7 +54,7 @@ export function PrayerTable({ prayers, currentPrayerId }: PrayerTableProps) {
                 </div>
               );
             })
-          : // SKELETON LOADER STATE (Render 6 fake rows)
+          : // SKELETON LOADER STATE
             [...Array(6)].map((_, i) => (
               <div key={i} className="flex justify-between items-center p-3 border-b border-foreground/5">
                 <Skeleton className="h-6 w-24" /> {/* Prayer Name */}

@@ -11,6 +11,7 @@ import { useSettings } from "@/modules/prayer/hooks/useSettings";
 import { SettingsModal } from "@/components/layout/SettingsModal";
 import { LocationBadge } from "@/components/ui/LocationBadge";
 import { Toast } from "@/components/ui/Toast";
+import { useOnlineStatus } from "@/modules/prayer/hooks/useOnlineStatus";
 
 export default function Home() {
   // Initialize `date` to null to avoid server/client hydration mismatch
@@ -20,6 +21,7 @@ export default function Home() {
   const [now, setNow] = useState(new Date());
   // State to control if the Settings Modal is visible
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+  const isOnline = useOnlineStatus();
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 60000); // Update 'now' only every 60 seconds
@@ -71,6 +73,7 @@ export default function Home() {
         <section id="hero-section" className="h-full w-full snap-start flex flex-col items-center justify-center p-6 relative">
           <LocationBadge coords={coords} source={source} loading={loading} accuracy={accuracy} error={error} />
           <Toast message={error} visible={!!error} />
+          <Toast message="No internet connection. Using offline calculations." visible={!isOnline} duration={0} className="top-20 right-4" />
           {/* Show a small loading text if we are still finding the user */}
           {/* {locLoading && <div className="absolute top-20 bg-background/80 px-4 py-2 rounded-full text-xs animate-pulse border border-foreground/10">Detecting location...</div>} */}
 

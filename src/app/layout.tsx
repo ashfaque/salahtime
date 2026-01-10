@@ -1,3 +1,5 @@
+import { MAINTENANCE_MODE } from "@/lib/constants";
+import { StatusScreen } from "@/components/ui/StatusScreen";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
@@ -36,6 +38,20 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // If maintenance is on, hijack the entire body content
+  if (MAINTENANCE_MODE) {
+    return (
+      <html lang="en">
+        <body className="antialiased">
+          <StatusScreen
+            title="Under Maintenance"
+            message="We are currently upgrading the app to make it better for you. Please check back in a few minutes."
+            icon={<span className="text-4xl">🛠️</span>}
+          />
+        </body>
+      </html>
+    );
+  }
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>

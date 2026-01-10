@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
 import { Coordinates, PrayerTimes, Madhab } from "adhan"; // CalculationMethod
-import { getTimeRemaining } from "@/lib/date-utils";
 import { getMethodObj } from "../utils";
 
 // Strongly-typed prayer item used across the hook
@@ -17,7 +16,6 @@ export function usePrayerTimes(date: Date, coords: Coordinates, nowParam?: Date,
   const [nextPrayer, setNextPrayer] = useState<PrayerItem | null>(null);
   const [currentPrayer, setCurrentPrayer] = useState<PrayerItem | null>(null);
   const [currentPrayerId, setCurrentPrayerId] = useState<string>("");
-  const [timeRemaining, setTimeRemaining] = useState("00:00:00");
 
   // 1. EXPENSIVE CALCULATION (Memoized)
   // Only re-runs if `date` or `coords` change. NOT when `now` changes.
@@ -81,15 +79,11 @@ export function usePrayerTimes(date: Date, coords: Coordinates, nowParam?: Date,
     setNextPrayer(foundNext);
 
     // C. Update Time Remaining directly here
-    if (foundNext) {
-      setTimeRemaining(getTimeRemaining(foundNext.time, now));
-    }
   }, [calculationData, nowParam]); // Dependencies: The Memoized Data + The Ticking Clock
 
   return {
     prayers: calculationData?.list || null,
     nextPrayer,
-    timeRemaining,
     currentPrayerId,
     currentPrayer,
   };

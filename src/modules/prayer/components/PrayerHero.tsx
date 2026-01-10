@@ -4,16 +4,16 @@ import { useState, useEffect } from "react";
 import { ArrowDownIcon, ChevronLeft, ChevronRight } from "@/components/ui/Icon";
 import { formatDate, formatTime } from "@/lib/date-utils";
 import { Skeleton } from "@/components/ui/Skeleton";
+import { Countdown } from "@/components/ui/Countdown";
 
 interface PrayerHeroProps {
   date: Date;
   setDate: (date: Date) => void;
   nextPrayer: { name: string; time: Date } | null;
   currentPrayer: { name: string; time: Date } | null;
-  timeRemaining: string;
 }
 
-export function PrayerHero({ date, setDate, nextPrayer, currentPrayer, timeRemaining }: PrayerHeroProps) {
+export function PrayerHero({ date, setDate, nextPrayer, currentPrayer }: PrayerHeroProps) {
   // 1. ALWAYS start in loading state when this component is born
   const [isLoading, setIsLoading] = useState(true);
 
@@ -78,7 +78,9 @@ export function PrayerHero({ date, setDate, nextPrayer, currentPrayer, timeRemai
           ) : (
             <>
               <p className="text-xl text-foreground/60">{currentPrayer ? `${currentPrayer.name} ends in:` : "Next Prayer in:"}</p>
-              <h1 className="text-6xl font-bold tracking-tight font-mono tabular-nums">{timeRemaining}</h1>
+              <h1 className="text-6xl font-bold tracking-tight font-mono">
+                <Countdown targetDate={nextPrayer.time} />
+              </h1>
               <p className="text-xl">
                 {nextPrayer.name} at {formatTime(nextPrayer.time)}
               </p>

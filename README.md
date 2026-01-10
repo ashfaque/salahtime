@@ -192,3 +192,37 @@ This gives you a temporary `https://` link to your local PC.
 5. **Result:** The phone treats `localhost` as secure, so the popup **will appear**.
 
 ---
+
+## Testing on a dummy domain before going live
+
+#### Option A: ngrok (Easiest & Most Popular)
+
+1. Install ngrok (if you haven't): `npm install -g ngrok`
+
+2. Start your Next.js production server in one terminal:
+```bash
+npm run start -- -p 3000
+```
+
+3. In a **second terminal**, start the tunnel:
+```bash
+ngrok http 3000
+```
+
+4. **Result:** ngrok will give you a URL like `https://random-name.ngrok-free.app`. Open this on your phone. It will act exactly like a real production domain with HTTPS.
+
+#### Option B: Cloudflare Tunnel (Free & Faster)
+
+If you don't want to create an ngrok account, use Cloudflare's quick tunnel.
+
+1. Start your Next.js server: `npm run start`
+
+2. In a second terminal run:
+```bash
+npx cloudflared tunnel --url http://localhost:3000
+```
+
+3. **Result:** It will print a URL ending in `.trycloudflare.com`. Use that on your phone.
+
+> pnpm dlx cloudflared tunnel --url http://localhost:3000
+

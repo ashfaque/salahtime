@@ -2,14 +2,17 @@
 
 import { useEffect, useState } from "react";
 import type { Coordinates } from "adhan";
+import { getCachedLocation, saveCachedLocation } from "@/lib/locCache";
 
 type Props = {
   coords: Coordinates;
   source: "default" | "ip" | "gps";
   loading?: boolean;
+  accuracy?: number | null;
+  error?: string | null;
 };
 
-export function LocationBadge({ coords, source, loading }: Props) {
+export function LocationBadge({ coords, source, loading, accuracy, error }: Props) {
   const [name, setName] = useState<string | null>(null);
   const [fetching, setFetching] = useState(false);
 
@@ -33,16 +36,35 @@ export function LocationBadge({ coords, source, loading }: Props) {
     }
 
     async function fetchName() {
+      const resolved = resolveLatLon(coords);
+      if (!resolved) return; // Silent return if invalid
+      const { lat, lon } = resolved;
+
+      // 1. CHECK CACHE (rounded to ~111m precision)
+      try {
+        const cached = getCachedLocation(lat, lon);
+        if (cached) {
+          if (mounted) setName(cached);
+          return; // Use cache and skip network
+        }
+      } catch {
+        // localStorage may be unavailable (private mode); ignore and continue
+      }
+
       setFetching(true);
       try {
-        const resolved = resolveLatLon(coords);
-        if (!resolved) throw new Error("No valid coordinates");
-        const { lat, lon } = resolved;
-
-        // Use Nominatim reverse geocoding (no API key). Keep it simple for UX purposes.
+        // Use Nominatim reverse geocoding (no API key).
         const url = `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${encodeURIComponent(lat)}&lon=${encodeURIComponent(lon)}&zoom=10&addressdetails=1`;
 
         const res = await fetch(url, { signal: controller.signal, headers: { Accept: "application/json" } });
+
+        // Handle aggressive rate-limiting or blocking
+        if (res.status === 429 || res.status === 403) {
+          console.warn("Nominatim rate limit or access denied (status)", res.status);
+          if (mounted) setName(`${lat.toFixed(3)}, ${lon.toFixed(3)}`);
+          return;
+        }
+
         if (!res.ok) throw new Error("Reverse geocode failed");
         const data = await res.json();
 
@@ -57,10 +79,16 @@ export function LocationBadge({ coords, source, loading }: Props) {
           display = data.display_name;
         }
 
-        if (mounted) setName(display);
+        if (mounted) {
+          // show result and cache it (best-effort)
+          const final = display ?? `${lat.toFixed(3)}, ${lon.toFixed(3)}`;
+          setName(final);
+          if (display) saveCachedLocation(lat, lon, display);
+        }
       } catch (err) {
         console.warn("Reverse geocode failed", err);
-        if (mounted) setName(null);
+        // On error, show coordinates as fallback so UI isn't empty
+        if (mounted) setName(`${lat.toFixed(3)}, ${lon.toFixed(3)}`);
       } finally {
         if (mounted) setFetching(false);
       }
@@ -90,7 +118,12 @@ export function LocationBadge({ coords, source, loading }: Props) {
 
         <span className="leading-none">{name ?? (fetching ? "Detecting location..." : "Unknown location")}</span>
 
-        <span className="ml-2 text-[10px] text-foreground/60">{source}</span>
+        <span className="ml-2 text-[10px] text-foreground/60 flex items-center gap-2">
+          <span className="uppercase">{source}</span>
+          {typeof accuracy === "number" && <span className="text-[10px] text-foreground/60">{Math.round(accuracy)}m</span>}
+        </span>
+
+        {error && <div className="ml-2 text-[10px] text-red-500/80">{error}</div>}
       </div>
     </div>
   );

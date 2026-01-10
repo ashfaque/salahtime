@@ -14,7 +14,7 @@ export function ThemeScript() {
           document.documentElement.classList.add("light");
           document.documentElement.classList.remove("dark");
         }
-      } catch (e) {}
+      } catch {}
     })();
   `;
 

@@ -54,8 +54,7 @@ export function formatDate(date: Date): string {
 /**
  * Calculates the difference between now and a target time in "HH:MM:SS" format
  */
-export function getTimeRemaining(target: Date): string {
-  const now = new Date();
+export function getTimeRemaining(target: Date, now: Date = new Date()): string {
   const diff = target.getTime() - now.getTime();
 
   if (diff <= 0) return "00:00:00"; // Time passed
@@ -79,7 +78,7 @@ export function getTimezoneShort(): string {
     const short = new Intl.DateTimeFormat("en-US", { timeZoneName: "short" }).formatToParts(new Date()).find((part) => part.type === "timeZoneName")?.value;
 
     return short || "LOC"; // Fallback
-  } catch (e) {
+  } catch {
     return "LOC";
   }
 }

@@ -18,9 +18,10 @@ interface HeaderProps {
   // NEW: We need these to control the status badge
   locationSource?: "default" | "ip" | "gps";
   onRetryLocation?: () => void;
+  accuracy?: number | null;
 }
 
-export function Header({ currentDate, onDateChange, locationSource, onRetryLocation }: HeaderProps) {
+export function Header({ currentDate, onDateChange, locationSource, onRetryLocation, accuracy }: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
   const dateInputRef = useRef<HTMLInputElement>(null);
 
@@ -32,7 +33,15 @@ export function Header({ currentDate, onDateChange, locationSource, onRetryLocat
   // Handle when user selects a date
   const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.value && onDateChange) {
-      onDateChange(new Date(e.target.value));
+      // e.target.value is YYYY-MM-DD; construct a local date to avoid UTC shift
+      const parts = e.target.value.split("-").map((p) => Number(p));
+      if (parts.length === 3) {
+        const [y, m, d] = parts;
+        onDateChange(new Date(y, m - 1, d));
+      } else {
+        // fallback
+        onDateChange(new Date(e.target.value));
+      }
     }
   };
 
@@ -82,8 +91,10 @@ export function Header({ currentDate, onDateChange, locationSource, onRetryLocat
           </button>
         )}
       </div>
+      {/* 3. Accuracy Indicator (small) */}
+      {/* <div className="mr-3 text-[12px] text-foreground/60">{typeof accuracy === "number" && locationSource === "gps" ? `${Math.round(accuracy)}m` : null}</div> */}
 
-      {/* 3. Dark Mode Toggle */}
+      {/* 4. Dark Mode Toggle */}
       <button
         onClick={toggleTheme}
         className={`w-12 h-6 rounded-full relative transition-colors focus:outline-none focus:ring-2 focus:ring-foreground/20 ${

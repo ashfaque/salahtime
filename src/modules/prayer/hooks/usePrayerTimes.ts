@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Coordinates, CalculationMethod, PrayerTimes, Madhab } from "adhan";
 import { getTimeRemaining } from "@/lib/date-utils";
 
@@ -9,31 +9,25 @@ interface PrayerItem {
   isSecondary?: boolean;
 }
 
-export function usePrayerTimes(date: Date, coords: Coordinates) {
-  // STATE DEFINITIONS
-  const [prayerData, setPrayerData] = useState<PrayerItem[] | null>(null);
+export function usePrayerTimes(date: Date, coords: Coordinates, nowParam?: Date) {
+  // STATE
   const [nextPrayer, setNextPrayer] = useState<PrayerItem | null>(null);
-  // To store the full current prayer object (e.g., { name: "Fajr", time: ... })
   const [currentPrayer, setCurrentPrayer] = useState<PrayerItem | null>(null);
-  // Initialize with specific placeholder
-  const [timeRemaining, setTimeRemaining] = useState("00:00:00");
   const [currentPrayerId, setCurrentPrayerId] = useState<string>("");
+  const [timeRemaining, setTimeRemaining] = useState("00:00:00");
 
-  useEffect(() => {
-    if (!coords) return;
-
-    // RESET TIMER INSTANTLY when date/coords change
-    setTimeRemaining("00:00:00");
+  // 1. EXPENSIVE CALCULATION (Memoized)
+  // Only re-runs if `date` or `coords` change. NOT when `now` changes.
+  const calculationData = useMemo(() => {
+    if (!coords) return null;
 
     const params = CalculationMethod.MoonsightingCommittee();
-
     params.madhab = Madhab.Hanafi;
 
-    // CALCULATE: Today's times
+    // A. Calculate Today's Schedule
     const prayers = new PrayerTimes(coords, date, params);
 
-    // List of prayers in order
-    const list = [
+    const list: PrayerItem[] = [
       { name: "Fajr", time: prayers.fajr },
       { name: "Sunrise", time: prayers.sunrise, isSecondary: true },
       { name: "Dhuhr", time: prayers.dhuhr },
@@ -42,63 +36,53 @@ export function usePrayerTimes(date: Date, coords: Coordinates) {
       { name: "Isha", time: prayers.isha },
     ];
 
-    setPrayerData(list);
+    // B. Pre-calculate Tomorrow's Fajr (Optimization)
+    const tomorrow = new Date(date);
+    tomorrow.setDate(date.getDate() + 1);
+    const tomorrowPrayers = new PrayerTimes(coords, tomorrow, params);
 
-    const currId = prayers.currentPrayer();
-    // This allows the UI to know which row to highlight
-    setCurrentPrayerId(currId);
+    const nextFajr: PrayerItem = { name: "Fajr", time: tomorrowPrayers.fajr };
 
-    // Find the full object for the current prayer (to get the display name "Isha")
-    const foundCurrent = list.find((p) => p.name.toLowerCase() === currId) || null;
-    setCurrentPrayer(foundCurrent);
+    return { list, nextFajr };
+  }, [date, coords]);
 
-    // 3. FIND NEXT PRAYER (Manual Robust Logic)
-    const now = new Date();
-    let foundNext = null;
+  // 2. CHEAP CALCULATION (The "Tick")
+  // Runs every second via `nowParam`, but only does fast array lookups.
+  useEffect(() => {
+    if (!calculationData) return;
+    const { list, nextFajr } = calculationData;
 
-    // A. Check today's list: Find the first prayer that is in the future
-    for (const p of list) {
-      if (p.time.getTime() > now.getTime()) {
-        foundNext = p;
-        break; // Stop at the first one found
+    const now = nowParam ?? new Date();
+
+    // A. Find Current Prayer
+    let currId = "";
+    for (let i = list.length - 1; i >= 0; i--) {
+      if (list[i].time.getTime() <= now.getTime()) {
+        currId = list[i].name.toLowerCase();
+        break;
       }
     }
+    setCurrentPrayerId(currId);
+    setCurrentPrayer(list.find((p) => p.name.toLowerCase() === currId) || null);
 
-    // B. If no prayer found today (passed Isha), get Tomorrow's Fajr
+    // B. Find Next Prayer
+    let foundNext = list.find((p) => p.time.getTime() > now.getTime());
+
+    // Fallback to pre-calculated tomorrow's Fajr
     if (!foundNext) {
-      const tomorrow = new Date(date);
-      tomorrow.setDate(date.getDate() + 1);
-
-      const tomorrowParams = CalculationMethod.MoonsightingCommittee();
-      tomorrowParams.madhab = Madhab.Hanafi; // ? HC: Asr will jump 1 hour ahead, shadow length = 2x object height, where Standard rule for others is shadow length = 1x object height.
-
-      const tomorrowPrayers = new PrayerTimes(coords, tomorrow, params);
-
-      foundNext = {
-        name: "Fajr",
-        time: tomorrowPrayers.fajr,
-      };
+      foundNext = nextFajr;
     }
 
     setNextPrayer(foundNext);
-  }, [date, coords]); // Re-run if Date OR Coordinates change
 
-  // 4. COUNTDOWN TICKER
-  useEffect(() => {
-    if (!nextPrayer?.time) return;
+    // C. Update Time Remaining directly here
+    if (foundNext) {
+      setTimeRemaining(getTimeRemaining(foundNext.time, now));
+    }
+  }, [calculationData, nowParam]); // Dependencies: The Memoized Data + The Ticking Clock
 
-    setTimeRemaining(getTimeRemaining(nextPrayer.time));
-
-    const timer = setInterval(() => {
-      setTimeRemaining(getTimeRemaining(nextPrayer.time));
-    }, 1000);
-
-    return () => clearInterval(timer);
-  }, [nextPrayer]);
-
-  // Return the new currentPrayerId along with everything else
   return {
-    prayers: prayerData,
+    prayers: calculationData?.list || null,
     nextPrayer,
     timeRemaining,
     currentPrayerId,

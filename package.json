@@ -5,8 +5,8 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "serve": "next dev --turbopack",
-    "build": "next build --turbopack",
-    "start": "next start",
+    "build": "next build",
+    "start": "next start -H 0.0.0.0",
     "lint": "eslint"
   },
   "dependencies": {

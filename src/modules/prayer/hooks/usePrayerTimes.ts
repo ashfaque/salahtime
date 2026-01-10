@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
-import { Coordinates, CalculationMethod, PrayerTimes, Madhab } from "adhan";
+import { Coordinates, PrayerTimes, Madhab } from "adhan"; // CalculationMethod
 import { getTimeRemaining } from "@/lib/date-utils";
+import { getMethodObj } from "../utils";
 
 // Strongly-typed prayer item used across the hook
 interface PrayerItem {
@@ -9,7 +10,9 @@ interface PrayerItem {
   isSecondary?: boolean;
 }
 
-export function usePrayerTimes(date: Date, coords: Coordinates, nowParam?: Date) {
+type MadhabType = typeof Madhab.Hanafi | typeof Madhab.Shafi;
+
+export function usePrayerTimes(date: Date, coords: Coordinates, nowParam?: Date, madhab: MadhabType = Madhab.Hanafi, methodName: string = "MoonsightingCommittee") {
   // STATE
   const [nextPrayer, setNextPrayer] = useState<PrayerItem | null>(null);
   const [currentPrayer, setCurrentPrayer] = useState<PrayerItem | null>(null);
@@ -21,8 +24,10 @@ export function usePrayerTimes(date: Date, coords: Coordinates, nowParam?: Date)
   const calculationData = useMemo(() => {
     if (!coords) return null;
 
-    const params = CalculationMethod.MoonsightingCommittee();
-    params.madhab = Madhab.Hanafi;
+    const params = getMethodObj(methodName);
+    params.madhab = madhab;
+    // const params = CalculationMethod.MoonsightingCommittee();
+    // params.madhab = Madhab.Hanafi;
 
     // A. Calculate Today's Schedule
     const prayers = new PrayerTimes(coords, date, params);
@@ -44,7 +49,7 @@ export function usePrayerTimes(date: Date, coords: Coordinates, nowParam?: Date)
     const nextFajr: PrayerItem = { name: "Fajr", time: tomorrowPrayers.fajr };
 
     return { list, nextFajr };
-  }, [date, coords]);
+  }, [date, coords, madhab, methodName]);
 
   // 2. CHEAP CALCULATION (The "Tick")
   // Runs every second via `nowParam`, but only does fast array lookups.

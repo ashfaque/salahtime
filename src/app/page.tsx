@@ -7,6 +7,8 @@ import { PrayerHero } from "@/modules/prayer/components/PrayerHero";
 import { PrayerTable } from "@/modules/prayer/components/PrayerTable";
 import { usePrayerTimes } from "@/modules/prayer/hooks/usePrayerTimes";
 import { useGeolocation } from "@/modules/prayer/hooks/useGeolocation";
+import { useSettings } from "@/modules/prayer/hooks/useSettings";
+import { SettingsModal } from "@/components/layout/SettingsModal";
 import { LocationBadge } from "@/components/ui/LocationBadge";
 import { Toast } from "@/components/ui/Toast";
 
@@ -16,6 +18,8 @@ export default function Home() {
   // Separate `now` from `date` so countdowns and "next prayer" are calculated
   // relative to the real current time while `date` is the user-selected view date.
   const [now, setNow] = useState(new Date());
+  // State to control if the Settings Modal is visible
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   useEffect(() => {
     const t = setInterval(() => setNow(new Date()), 1000);
@@ -31,7 +35,21 @@ export default function Home() {
   const { coords, source, requestLocation, loading, accuracy, error } = useGeolocation();
 
   // 2. PASS LOCATION TO PRAYER HOOK
-  const { prayers, nextPrayer, timeRemaining, currentPrayerId, currentPrayer } = usePrayerTimes(date || now, coords, now);
+  // const { prayers, nextPrayer, timeRemaining, currentPrayerId, currentPrayer } = usePrayerTimes(date || now, coords, now);
+
+  // 2. GET SETTINGS (Pass coords so it can auto-detect method)
+  // This hook manages the storage and logic for Hanafi vs Standard
+  const { madhab, method, setMethod, toggleMadhab } = useSettings(coords);
+
+  // 3. PASS LOCATION & SETTINGS TO PRAYER HOOK
+  // Now passing 'madhab' and 'method' so times recalculate automatically
+  const { prayers, nextPrayer, timeRemaining, currentPrayerId, currentPrayer } = usePrayerTimes(
+    date || now,
+    coords,
+    now,
+    madhab, // <-- Dynamic Madhab
+    method // <-- Dynamic Method
+  );
 
   if (!date) return null;
 
@@ -43,7 +61,11 @@ export default function Home() {
         locationSource={source} // Pass the status ('gps' | 'ip' | 'default')
         onRetryLocation={requestLocation} // Pass the retry function
         accuracy={accuracy}
+        onOpenSettings={() => setIsSettingsOpen(true)} // Connect the button click to our state
       />
+
+      {/* The Settings Screen */}
+      <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} madhab={madhab} onMadhabChange={toggleMadhab} method={method} onMethodChange={setMethod} />
 
       <main className="flex-1 overflow-y-auto snap-y snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
         <section id="hero-section" className="h-full w-full snap-start flex flex-col items-center justify-center p-6 relative">
@@ -59,7 +81,7 @@ export default function Home() {
         </section>
 
         <section id="table-section" className="h-full w-full snap-start flex flex-col items-center justify-center p-6 relative">
-          <PrayerTable prayers={prayers} currentPrayerId={currentPrayerId} />
+          <PrayerTable prayers={prayers} currentPrayerId={currentPrayerId} date={date} />
         </section>
       </main>
 

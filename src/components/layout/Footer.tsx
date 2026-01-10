@@ -5,9 +5,9 @@ export function Footer() {
     <footer className="fixed bottom-0 left-0 right-0 z-50 p-4 bg-background/80 backdrop-blur-md border-t border-foreground/10 text-center text-xs text-foreground/50 font-mono">
       <div className="flex flex-col gap-1 items-center justify-center">
         {/* 1. Calculation Method */}
-        <p className="tracking-wide">
+        {/* <p className="tracking-wide">
           Calculation Method: <span className="font-bold text-foreground/70">Moonsighting Committee</span>
-        </p>
+        </p> */}
 
         {/* 2. Copyright & Made With Love */}
         <p>

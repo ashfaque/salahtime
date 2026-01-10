@@ -1,6 +1,6 @@
 "use client"; // REQUIRED: Because we use interactivity
 
-import { CalendarIcon } from "@/components/ui/Icon";
+import { CalendarIcon, SettingsIcon } from "@/components/ui/Icon";
 import { getTimezoneShort, formatInputDate } from "@/lib/date-utils";
 import { useRef } from "react";
 import { useTheme } from "@/modules/prayer/hooks/useTheme";
@@ -19,9 +19,11 @@ interface HeaderProps {
   locationSource?: "default" | "ip" | "gps";
   onRetryLocation?: () => void;
   accuracy?: number | null;
+  onOpenSettings?: () => void;
 }
 
-export function Header({ currentDate, onDateChange, locationSource, onRetryLocation, accuracy }: HeaderProps) {
+export function Header({ currentDate, onDateChange, locationSource, onRetryLocation, onOpenSettings }: HeaderProps) {
+  // accuracy
   const { theme, toggleTheme } = useTheme();
   const dateInputRef = useRef<HTMLInputElement>(null);
 
@@ -90,6 +92,9 @@ export function Header({ currentDate, onDateChange, locationSource, onRetryLocat
             <span>📡</span> {locationSource === "ip" ? "Approx Loc" : "Enable GPS"}
           </button>
         )}
+        <button onClick={onOpenSettings} className="p-2 hover:bg-foreground/5 rounded-full transition-colors active:scale-95 text-foreground/70" aria-label="Settings">
+          <SettingsIcon className="w-5 h-5" />
+        </button>
       </div>
       {/* 3. Accuracy Indicator (small) */}
       {/* <div className="mr-3 text-[12px] text-foreground/60">{typeof accuracy === "number" && locationSource === "gps" ? `${Math.round(accuracy)}m` : null}</div> */}

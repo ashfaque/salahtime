@@ -36,6 +36,9 @@ const nextConfig: NextConfig = {
   //   // ⚠️ Allows production builds even with type errors. Use sparingly.
   //   ignoreBuildErrors: true,
   // },
+  env: {
+    NEXT_PUBLIC_BASE_PATH: basePath,
+  },
   images: {
     unoptimized: true,
   },

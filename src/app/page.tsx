@@ -12,6 +12,7 @@ import { SettingsModal } from "@/components/layout/SettingsModal";
 import { LocationBadge } from "@/components/ui/LocationBadge";
 import { Toast } from "@/components/ui/Toast";
 import { useOnlineStatus } from "@/modules/prayer/hooks/useOnlineStatus";
+import { MakruhCard } from "@/modules/prayer/components/MakruhCard";
 
 export default function Home() {
   // Initialize `date` to null to avoid server/client hydration mismatch
@@ -71,7 +72,7 @@ export default function Home() {
   if (!date) return null;
 
   return (
-    <div className="flex flex-col h-dvh w-full bg-background text-foreground overflow-hidden font-sans">
+    <div className="flex flex-col min-h-screen w-full bg-background text-foreground font-sans">
       <Header
         currentDate={date}
         onDateChange={setDate}
@@ -84,12 +85,13 @@ export default function Home() {
       {/* The Settings Screen */}
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} madhab={madhab} onMadhabChange={toggleMadhab} method={method} onMethodChange={setMethod} />
 
-      <main className="flex-1 overflow-y-auto snap-y snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
+      <main className="flex-1 w-full">
         {/* HERO SECTION */}
         {/* Added 'pt-16' and 'pb-16'. This subtracts the Header/Footer space 
             before calculating the 'justify-center', effectively placing the content
             in the 'Optical Center' (slightly higher than math center). */}
-        <section id="hero-section" className="h-full w-full snap-start flex flex-col items-center justify-center p-6 pt-16 pb-16 relative">
+        {/* Added 'h-dvh' and 'snap-always' */}
+        <section id="hero-section" className="h-dvh w-full snap-start snap-always flex flex-col items-center justify-center p-6 pt-16 pb-16 relative">
           <LocationBadge coords={coords} source={source} loading={loading} accuracy={accuracy} error={error} />
           <Toast message={error} visible={!!error} />
           <Toast message="No internet connection. Using offline calculations." visible={!isOnline} duration={0} className="top-20 right-4" />
@@ -102,8 +104,13 @@ export default function Home() {
           <PrayerHero key={date.getTime()} date={date} setDate={setDate} nextPrayer={nextPrayer} currentPrayer={currentPrayer} qibla={qibla} />
         </section>
 
-        <section id="table-section" className="h-full w-full snap-start flex flex-col items-center justify-center p-6 relative">
+        <section id="table-section" className="h-dvh w-full snap-start snap-always flex flex-col items-center justify-center p-6 relative">
           <PrayerTable prayers={prayers} currentPrayerId={currentPrayerId} date={date} />
+        </section>
+
+        {/* MAKRUH (Snap Page) */}
+        <section id="makruh-section-container" className="h-dvh w-full snap-start snap-always flex flex-col items-center justify-center p-6 relative">
+          <MakruhCard prayers={prayers} />
         </section>
       </main>
 

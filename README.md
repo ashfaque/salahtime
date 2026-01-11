@@ -226,3 +226,33 @@ npx cloudflared tunnel --url http://localhost:3000
 
 > pnpm dlx cloudflared tunnel --url http://localhost:3000
 
+---
+
+## Makruh Times Implementation Details
+Here is the logic summary for the "Forbidden (Makruh) Times" calculation in your new component:
+
+### **🚫 Forbidden (Makruh) Times Calculation**
+
+| Label / Period | Start Time Logic | End Time Logic | Why? (Description) |
+| --- | --- | --- | --- |
+| **Sunrise (Ishraq)** | **Exact Sunrise Time** <br>
+
+<br>*(from Adhan)* | **Sunrise + 15 mins** <br>
+
+<br>*(Added manually)* | Wait until the sun has fully risen above the horizon. |
+| **Zawal (Noon)** | **Dhuhr - 10 mins** <br>
+
+<br>*(Subtracted manually)* | **Exact Dhuhr Time** <br>
+
+<br>*(from Adhan)* | The sun is at its absolute highest peak (zenith) before declining. |
+| **Sunset (Ghurub)** | **Maghrib - 15 mins** <br>
+
+<br>*(Subtracted manually)* | **Exact Maghrib Time** <br>
+
+<br>*(from Adhan)* | When the sun turns yellow/orange and is about to set. |
+
+**Key Details:**
+
+* **Base Data:** Uses the exact `Sunrise`, `Dhuhr`, and `Maghrib` times calculated by the Adhan library for your location.
+* **Hardcoded Buffers:** The **15 min** (Sunrise/Sunset) and **10 min** (Zawal) buffers are standard safety margins used in Islamic jurisprudence to ensure the sun is clearly out of the forbidden zone.
+

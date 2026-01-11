@@ -51,6 +51,12 @@
   --font-mono: var(--font-mono);
 }
 
+/* Global Scroll Snap Logic */
+html {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+}
+
 /* Global Reset */
 body {
   background: var(--background);

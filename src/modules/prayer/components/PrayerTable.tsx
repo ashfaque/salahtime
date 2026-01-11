@@ -1,4 +1,4 @@
-import { ArrowUpIcon } from "@/components/ui/Icon";
+import { ArrowUpIcon, ArrowDownIcon } from "@/components/ui/Icon";
 import { formatTime } from "@/lib/date-utils";
 import { Skeleton } from "@/components/ui/Skeleton";
 
@@ -23,10 +23,15 @@ export function PrayerTable({ prayers, currentPrayerId, date }: PrayerTableProps
 
   const isToday = date ? date.toDateString() === new Date().toDateString() : false;
 
+  const scrollToMakruh = () => {
+    const section = document.getElementById("makruh-section");
+    if (section) section.scrollIntoView({ behavior: "smooth" });
+  };
+
   return (
-    <div id="table-section" className="flex flex-col items-center justify-center w-full max-w-md relative pb-14">
+    <div id="table-section" className="flex flex-col items-center justify-center w-full max-w-md relative">
       {/* Scroll Up Button */}
-      <button onClick={scrollToTop} className="absolute -top-16 animate-bounce p-2 hover:bg-foreground/5 rounded-full">
+      <button onClick={scrollToTop} className="absolute -top-12 animate-bounce p-2 hover:bg-foreground/5 rounded-full">
         <ArrowUpIcon className="w-6 h-6 opacity-50" />
       </button>
 
@@ -62,6 +67,16 @@ export function PrayerTable({ prayers, currentPrayerId, date }: PrayerTableProps
               </div>
             ))}
       </div>
+
+      {/* Tiny, subtle disclaimer */}
+      <p className="text-xs text-foreground/60 italic mt-4 text-center max-w-xs leading-relaxed">
+        * Suhoor ends at Fajr start. Generally, each prayer time lasts until the next one begins.
+      </p>
+
+      {/* Down Arrow to Makruh Section */}
+      <button onClick={scrollToMakruh} className="absolute -bottom-16 animate-bounce p-2 hover:bg-foreground/5 rounded-full cursor-pointer" aria-label="See Forbidden Times">
+        <ArrowDownIcon className="w-6 h-6 opacity-30 hover:opacity-100 transition-opacity" />
+      </button>
     </div>
   );
 }

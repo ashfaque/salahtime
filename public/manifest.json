@@ -2,19 +2,18 @@
   "name": "SalahTime",
   "short_name": "SalahTime",
   "description": "A simple and elegant prayer timetable app to get daily prayer times based on your location.",
-  "start_url": "/",
+  "start_url": "./",
   "display": "standalone",
   "background_color": "#0a0a0a",
   "theme_color": "#0a0a0a",
   "icons": [
     {
-      "src": "/icon-192.png",
+      "src": "images/icon-192.png",
       "sizes": "192x192",
       "type": "image/png"
     },
     {
-      "src": "/icon-512.png",
-      "sizes": "512x512",
+      "src": "images/icon-512.png",
       "type": "image/png"
     }
   ]

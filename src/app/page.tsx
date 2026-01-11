@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { PrayerHero } from "@/modules/prayer/components/PrayerHero";
@@ -23,8 +23,23 @@ export default function Home() {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const isOnline = useOnlineStatus();
 
+  // Track the current day to detect midnight changes
+  const todayRef = useRef(new Date().getDate());
+
   useEffect(() => {
-    const t = setInterval(() => setNow(new Date()), 60000); // Update 'now' only every 60 seconds
+    // Tick every second (1000ms) to fix Stuck Table & Countdown
+    const t = setInterval(() => {
+      const current = new Date();
+      setNow(current);
+
+      // Midnight Transition
+      // If the real-world day changes (e.g., 11th -> 12th), auto-update the view.
+      if (current.getDate() !== todayRef.current) {
+        todayRef.current = current.getDate();
+        setDate(current); // Flip the calendar to the new "Today"
+      }
+    }, 1000);
+
     return () => clearInterval(t);
   }, []);
 

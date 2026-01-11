@@ -46,14 +46,21 @@ export function usePrayerTimes(date: Date, coords: Coordinates, nowParam?: Date,
 
     const nextFajr: PrayerItem = { name: "Fajr", time: tomorrowPrayers.fajr };
 
-    return { list, nextFajr };
+    // Pre-calculate Yesterday's Isha (For the Midnight Gap)
+    const yesterday = new Date(date);
+    yesterday.setDate(date.getDate() - 1);
+    const yesterdayPrayers = new PrayerTimes(coords, yesterday, params);
+    const prevIsha: PrayerItem = { name: "Isha", time: yesterdayPrayers.isha };
+
+    return { list, nextFajr, prevIsha };
   }, [date, coords, madhab, methodName]);
 
   // 2. CHEAP CALCULATION (The "Tick")
   // Runs every second via `nowParam`, but only does fast array lookups.
   useEffect(() => {
+    // A. Find Current Prayer
     if (!calculationData) return;
-    const { list, nextFajr } = calculationData;
+    const { list, nextFajr, prevIsha } = calculationData; // Get previous day Isha
 
     const now = nowParam ?? new Date();
 
@@ -65,8 +72,16 @@ export function usePrayerTimes(date: Date, coords: Coordinates, nowParam?: Date,
         break;
       }
     }
+
+    // If no prayer found (let say, it's 12:01 AM - 5:00 AM), it is technically Isha time
+    if (!currId) {
+      currId = "isha";
+      setCurrentPrayer(prevIsha);
+    } else {
+      setCurrentPrayer(list.find((p) => p.name.toLowerCase() === currId) || null);
+    }
+
     setCurrentPrayerId(currId);
-    setCurrentPrayer(list.find((p) => p.name.toLowerCase() === currId) || null);
 
     // B. Find Next Prayer
     let foundNext = list.find((p) => p.time.getTime() > now.getTime());

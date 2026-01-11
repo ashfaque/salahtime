@@ -1,4 +1,4 @@
-import { MAINTENANCE_MODE } from "@/lib/constants";
+import { MAINTENANCE_MODE, THEME_COLORS } from "@/lib/constants";
 import { StatusScreen } from "@/components/ui/StatusScreen";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
@@ -32,6 +32,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScalable: false, // Prevents zooming when tapping inputs on iOS
+  themeColor: THEME_COLORS.light,
 };
 
 // ? SYNTAX: function RootLayout(VARIABLE: TYPE_HINT) { ... }

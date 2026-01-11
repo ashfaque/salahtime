@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { THEME_COLORS } from "@/lib/constants";
 
 type Theme = "light" | "dark";
 
@@ -33,6 +34,10 @@ export function useTheme() {
 
     // Add the correct class
     root.classList.add(newTheme);
+
+    // Dynamically update the status bar color
+    const color = newTheme === "dark" ? THEME_COLORS.dark : THEME_COLORS.light;
+    document.querySelector('meta[name="theme-color"]')?.setAttribute("content", color);
   };
 
   // 3. The Toggle Function

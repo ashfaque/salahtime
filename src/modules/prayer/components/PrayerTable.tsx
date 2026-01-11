@@ -24,7 +24,7 @@ export function PrayerTable({ prayers, currentPrayerId, date }: PrayerTableProps
   const isToday = date ? date.toDateString() === new Date().toDateString() : false;
 
   return (
-    <div id="table-section" className="flex flex-col items-center justify-center w-full max-w-md relative pb-20">
+    <div id="table-section" className="flex flex-col items-center justify-center w-full max-w-md relative pb-14">
       {/* Scroll Up Button */}
       <button onClick={scrollToTop} className="absolute -top-16 animate-bounce p-2 hover:bg-foreground/5 rounded-full">
         <ArrowUpIcon className="w-6 h-6 opacity-50" />

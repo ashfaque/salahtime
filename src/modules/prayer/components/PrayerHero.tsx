@@ -77,7 +77,7 @@ export function PrayerHero({ date, setDate, nextPrayer, currentPrayer }: PrayerH
             </div>
           ) : (
             <>
-              <p className="text-xl text-foreground/60">{currentPrayer ? `${currentPrayer.name} ends in:` : "Next Prayer in:"}</p>
+              <p className="text-xl text-foreground/60">{currentPrayer && currentPrayer.name !== "Sunrise" ? `${currentPrayer.name} ends in:` : "Next Prayer in:"}</p>
               <h1 className="text-6xl font-bold tracking-tight font-mono">
                 <Countdown targetDate={nextPrayer.time} />
               </h1>

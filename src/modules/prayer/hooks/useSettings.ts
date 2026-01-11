@@ -22,7 +22,13 @@ export function useSettings(coords: Coordinates) {
 
   // Recalculate Method when coords change (Smart Country Logic)
   useEffect(() => {
-    if (coords) {
+    // 1. Check if user has a saved preference
+    const savedMethod = storage.getItem<string | null>("calculationMethod", null);
+
+    if (savedMethod) {
+      setMethod(savedMethod); // Use saved preference
+    } else if (coords) {
+      // 2. If no save, use auto-detect
       const smartMethod = getRecommendedMethod(coords);
       setMethod(smartMethod);
     }
@@ -35,10 +41,16 @@ export function useSettings(coords: Coordinates) {
     storage.setItem("madhab", val);
   };
 
+  // Wrapper to save preference when user changes dropdown
+  const handleMethodChange = (val: string) => {
+    setMethod(val);
+    storage.setItem("calculationMethod", val);
+  };
+
   return {
     madhab,
     method,
-    setMethod, // User can override this manually for this session
+    setMethod: handleMethodChange,
     toggleMadhab,
   };
 }

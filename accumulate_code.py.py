@@ -43,7 +43,7 @@ def generate_codebase_md(root_path, output_file="temp.codebase.md"):
                                 content = infile.read()
 
                                 # Write the formatted output
-                                outfile.write(f"# {relative_path}\n")
+                                outfile.write(f"# src\{relative_path}\n")
                                 outfile.write(f"```{lang}\n")  # Dynamic language tag
                                 outfile.write(content)
                                 outfile.write(

@@ -3,7 +3,7 @@ import { StatusScreen } from "@/components/ui/StatusScreen";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { ThemeScript } from "./ThemeScript";
+import { ThemeScript } from "@/app/ThemeScript";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

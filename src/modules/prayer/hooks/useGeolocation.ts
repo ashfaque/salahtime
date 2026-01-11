@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Coordinates } from "adhan";
-import { fetchFromProviders } from "../lib/ipProviders";
+import { fetchFromProviders } from "@/modules/prayer/lib/ipProviders";
 
 // Default: New Delhi (Fallback) - module-level so hooks are stable
 const DEFAULT_COORDS = new Coordinates(28.6139, 77.209);

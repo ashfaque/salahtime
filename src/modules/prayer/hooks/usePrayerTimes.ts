@@ -1,6 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { Coordinates, PrayerTimes, Madhab } from "adhan"; // CalculationMethod
-import { getMethodObj } from "../utils";
+import { getMethodObj } from "@/modules/prayer/utils";
 
 // Strongly-typed prayer item used across the hook
 interface PrayerItem {

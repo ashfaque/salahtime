@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Coordinates, Madhab } from "adhan";
 import { storage } from "@/lib/storage";
-import { getRecommendedMethod } from "../utils";
+import { getRecommendedMethod } from "@/modules/prayer/utils";
 
 // Define a safe type for Madhab values
 type MadhabValue = typeof Madhab.Hanafi | typeof Madhab.Shafi;

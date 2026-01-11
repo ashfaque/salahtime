@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
-import { Coordinates, PrayerTimes, Madhab } from "adhan"; // CalculationMethod
+import { Coordinates, PrayerTimes, Madhab, HighLatitudeRule, Qibla } from "adhan"; // CalculationMethod
 import { getMethodObj } from "@/modules/prayer/utils";
 
 // Strongly-typed prayer item used across the hook
@@ -24,6 +24,9 @@ export function usePrayerTimes(date: Date, coords: Coordinates, nowParam?: Date,
 
     const params = getMethodObj(methodName);
     params.madhab = madhab;
+    // GLOBAL FIX: Handles places like Norway/UK where twilight persists.
+    // "SeventhOfTheNight" is the safest standard fallback for polar regions.
+    params.highLatitudeRule = HighLatitudeRule.SeventhOfTheNight;
     // const params = CalculationMethod.MoonsightingCommittee();
     // params.madhab = Madhab.Hanafi;
 
@@ -52,7 +55,9 @@ export function usePrayerTimes(date: Date, coords: Coordinates, nowParam?: Date,
     const yesterdayPrayers = new PrayerTimes(coords, yesterday, params);
     const prevIsha: PrayerItem = { name: "Isha", time: yesterdayPrayers.isha };
 
-    return { list, nextFajr, prevIsha };
+    // Qibla Calculation
+    const qibla = Qibla(coords);
+    return { list, nextFajr, prevIsha, qibla };
   }, [date, coords, madhab, methodName]);
 
   // 2. CHEAP CALCULATION (The "Tick")
@@ -101,5 +106,6 @@ export function usePrayerTimes(date: Date, coords: Coordinates, nowParam?: Date,
     nextPrayer,
     currentPrayerId,
     currentPrayer,
+    qibla: calculationData?.qibla || 0,
   };
 }

@@ -11,9 +11,10 @@ interface PrayerHeroProps {
   setDate: (date: Date) => void;
   nextPrayer: { name: string; time: Date } | null;
   currentPrayer: { name: string; time: Date } | null;
+  qibla: number;
 }
 
-export function PrayerHero({ date, setDate, nextPrayer, currentPrayer }: PrayerHeroProps) {
+export function PrayerHero({ date, setDate, nextPrayer, currentPrayer, qibla }: PrayerHeroProps) {
   // 1. ALWAYS start in loading state when this component is born
   const [isLoading, setIsLoading] = useState(true);
 
@@ -25,7 +26,7 @@ export function PrayerHero({ date, setDate, nextPrayer, currentPrayer }: PrayerH
     return () => clearTimeout(timer);
   }, []);
 
-  // Simple handlers (No longer need to track loading here)
+  // Simple handlers
   const handlePrevDay = () => {
     const newDate = new Date(date);
     newDate.setDate(date.getDate() - 1);
@@ -56,7 +57,7 @@ export function PrayerHero({ date, setDate, nextPrayer, currentPrayer }: PrayerH
     <div className="flex flex-col items-center justify-center gap-8 w-full max-w-md text-center relative animate-in fade-in zoom-in-95 duration-300">
       {/* Date Navigation */}
       <div className="flex flex-col items-center gap-1">
-        {" "}
+        {/* {" "} */}
         {/* Stack vertically */}
         <div className="flex items-center gap-4 text-lg font-medium select-none">
           <button onClick={handlePrevDay} className="p-2 hover:bg-foreground/5 rounded-full active:scale-95 transition-transform">
@@ -69,9 +70,13 @@ export function PrayerHero({ date, setDate, nextPrayer, currentPrayer }: PrayerH
             <ChevronRight className="w-6 h-6" />
           </button>
         </div>
+
         {/* Hijri Date Subtitle */}
         {/* 'text-foreground/60' makes it subtle. 'font-mono' gives it a clean data look. */}
         <span className="text-sm text-foreground/60 font-mono -mt-1 tracking-wide">{formatHijriDate(date)}</span>
+
+        {/* DISPLAY QIBLA */}
+        <span className="text-[10px] text-foreground/40 font-mono tracking-wider uppercase mt-1">QIBLA: {Math.round(qibla)}° N</span>
       </div>
 
       {/* Countdown Display */}

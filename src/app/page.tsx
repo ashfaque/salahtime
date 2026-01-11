@@ -45,7 +45,7 @@ export default function Home() {
 
   // 3. PASS LOCATION & SETTINGS TO PRAYER HOOK
   // Now passing 'madhab' and 'method' so times recalculate automatically
-  const { prayers, nextPrayer, currentPrayerId, currentPrayer } = usePrayerTimes(
+  const { prayers, nextPrayer, currentPrayerId, currentPrayer, qibla } = usePrayerTimes(
     date || now,
     coords,
     now,
@@ -80,7 +80,7 @@ export default function Home() {
           {/* Show error if they denied permission (optional UX improvement) */}
           {/* {locError && <div className="absolute top-20 bg-red-500/10 text-red-500 px-4 py-2 rounded-full text-xs border border-red-500/20">Using default location (New Delhi)</div>} */}
 
-          <PrayerHero key={date.getTime()} date={date} setDate={setDate} nextPrayer={nextPrayer} currentPrayer={currentPrayer} />
+          <PrayerHero key={date.getTime()} date={date} setDate={setDate} nextPrayer={nextPrayer} currentPrayer={currentPrayer} qibla={qibla} />
         </section>
 
         <section id="table-section" className="h-full w-full snap-start flex flex-col items-center justify-center p-6 relative">

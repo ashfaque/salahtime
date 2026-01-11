@@ -56,7 +56,7 @@ export default function Home() {
   if (!date) return null;
 
   return (
-    <div className="flex flex-col h-screen w-full bg-background text-foreground overflow-hidden font-sans">
+    <div className="flex flex-col h-dvh w-full bg-background text-foreground overflow-hidden font-sans">
       <Header
         currentDate={date}
         onDateChange={setDate}
@@ -70,7 +70,11 @@ export default function Home() {
       <SettingsModal isOpen={isSettingsOpen} onClose={() => setIsSettingsOpen(false)} madhab={madhab} onMadhabChange={toggleMadhab} method={method} onMethodChange={setMethod} />
 
       <main className="flex-1 overflow-y-auto snap-y snap-mandatory scroll-smooth [scrollbar-width:none] [-ms-overflow-style:none] [&::-webkit-scrollbar]:hidden">
-        <section id="hero-section" className="h-full w-full snap-start flex flex-col items-center justify-center p-6 relative">
+        {/* HERO SECTION */}
+        {/* Added 'pt-16' and 'pb-16'. This subtracts the Header/Footer space 
+            before calculating the 'justify-center', effectively placing the content
+            in the 'Optical Center' (slightly higher than math center). */}
+        <section id="hero-section" className="h-full w-full snap-start flex flex-col items-center justify-center p-6 pt-16 pb-16 relative">
           <LocationBadge coords={coords} source={source} loading={loading} accuracy={accuracy} error={error} />
           <Toast message={error} visible={!!error} />
           <Toast message="No internet connection. Using offline calculations." visible={!isOnline} duration={0} className="top-20 right-4" />

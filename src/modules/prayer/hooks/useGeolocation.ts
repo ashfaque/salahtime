@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Coordinates } from "adhan";
 import { fetchFromProviders } from "@/modules/prayer/lib/ipProviders";
+import { storage } from "@/lib/storage";
 
 // Default: New Delhi (Fallback) - module-level so hooks are stable
 const DEFAULT_COORDS = new Coordinates(28.6139, 77.209);
@@ -19,6 +20,33 @@ export function useGeolocation() {
   const latestSource = useRef<typeof source>(source);
   // Prevent double-requesting GPS on mount vs permission handler
   const gpsRequestedRef = useRef(false);
+
+  // Save valid locations to cache
+  useEffect(() => {
+    // Only save if it's a "real" location (not the default New Delhi)
+    if (source === "gps" || source === "ip") {
+      storage.setItem("lastKnownCoords", {
+        lat: coords.latitude,
+        lon: coords.longitude,
+        source: source, // Save source too so we know how accurate it was
+      });
+    }
+  }, [coords, source]);
+
+  // Load cache on mount to prevent "Default location flicker"
+  useEffect(() => {
+    const cached = storage.getItem<{ lat: number; lon: number; source: string } | null>("lastKnownCoords", null);
+
+    // If we have a cache, use it IMMEDIATELY as the temporary "default"
+    if (cached && cached.lat && cached.lon) {
+      setCoords(new Coordinates(cached.lat, cached.lon));
+
+      // We label it as 'ip' (approx) so the UI knows it's not live GPS yet
+      // This ensures the "Green Badge" only appears when real GPS confirms it later.
+      setSource("ip");
+      setLoading(false); // Show the data instantly!
+    }
+  }, []); // Runs once on mount
 
   // keep a ref of current source to avoid stale closures
   useEffect(() => {

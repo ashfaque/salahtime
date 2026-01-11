@@ -180,17 +180,14 @@ export function useGeolocation() {
           try {
             const s = permissionStatus?.state;
             if (s === "granted") {
-              // If user granted, attempt GPS and clear previous error
+              // Always fetch location if granted, regardless of history.
+              // We don't care if we requested it before; we have permission NOW.
               setError(null);
               setLoading(true);
-              // Only request GPS if we haven't already requested it during init
-              if (!gpsRequestedRef.current) {
-                gpsRequestedRef.current = true;
-                requestGPS();
-              }
+              gpsRequestedRef.current = true;
+              requestGPS();
             } else if (s === "denied") {
-              // If user revoked, fall back to IP and surface a harmless message
-              // Reset gpsRequestedRef so we can retry later if permission changes
+              // If user revoked, fall back to IP
               gpsRequestedRef.current = false;
               setError("GPS permission denied");
               // Only fetch passive if we aren't already on gps
@@ -199,7 +196,6 @@ export function useGeolocation() {
                 fetchPassiveLocation();
               }
             } else if (s === "prompt") {
-              // prompt: do nothing but keep passive location available
               // Allow future automatic requests when prompt resolves
               gpsRequestedRef.current = false;
               if (latestSource.current !== "gps") fetchPassiveLocation();

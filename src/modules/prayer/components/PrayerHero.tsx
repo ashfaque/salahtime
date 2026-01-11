@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ArrowDownIcon, ChevronLeft, ChevronRight } from "@/components/ui/Icon";
-import { formatDate, formatTime } from "@/lib/date-utils";
+import { formatDate, formatTime, formatHijriDate } from "@/lib/date-utils";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Countdown } from "@/components/ui/Countdown";
 
@@ -55,16 +55,23 @@ export function PrayerHero({ date, setDate, nextPrayer, currentPrayer }: PrayerH
   return (
     <div className="flex flex-col items-center justify-center gap-8 w-full max-w-md text-center relative animate-in fade-in zoom-in-95 duration-300">
       {/* Date Navigation */}
-      <div className="flex items-center gap-4 text-lg font-medium select-none">
-        <button onClick={handlePrevDay} className="p-2 hover:bg-foreground/5 rounded-full active:scale-95 transition-transform">
-          <ChevronLeft className="w-6 h-6" />
-        </button>
+      <div className="flex flex-col items-center gap-1">
+        {" "}
+        {/* Stack vertically */}
+        <div className="flex items-center gap-4 text-lg font-medium select-none">
+          <button onClick={handlePrevDay} className="p-2 hover:bg-foreground/5 rounded-full active:scale-95 transition-transform">
+            <ChevronLeft className="w-6 h-6" />
+          </button>
 
-        <span className="min-w-[140px]">{formatDate(date)}</span>
+          <span className="min-w-[140px]">{formatDate(date)}</span>
 
-        <button onClick={handleNextDay} className="p-2 hover:bg-foreground/5 rounded-full active:scale-95 transition-transform">
-          <ChevronRight className="w-6 h-6" />
-        </button>
+          <button onClick={handleNextDay} className="p-2 hover:bg-foreground/5 rounded-full active:scale-95 transition-transform">
+            <ChevronRight className="w-6 h-6" />
+          </button>
+        </div>
+        {/* Hijri Date Subtitle */}
+        {/* 'text-foreground/60' makes it subtle. 'font-mono' gives it a clean data look. */}
+        <span className="text-sm text-foreground/60 font-mono -mt-1 tracking-wide">{formatHijriDate(date)}</span>
       </div>
 
       {/* Countdown Display */}

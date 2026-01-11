@@ -1,3 +1,20 @@
+import { toHijri } from "hijri-converter";
+
+const HIJRI_MONTHS = [
+  "Muharram",
+  "Safar",
+  "Rabi' al-Awwal",
+  "Rabi' al-Thani",
+  "Jumada al-Awwal",
+  "Jumada al-Thani",
+  "Rajab",
+  "Sha'ban",
+  "Ramadan",
+  "Shawwal",
+  "Dhu al-Qi'dah",
+  "Dhu al-Hijjah",
+];
+
 /**
  * Formats a Date object into a readable time string (e.g., "05:30 PM")
  */
@@ -91,4 +108,29 @@ export function formatInputDate(date: Date): string {
   const month = (date.getMonth() + 1).toString().padStart(2, "0");
   const day = date.getDate().toString().padStart(2, "0");
   return `${year}-${month}-${day}`;
+}
+
+/**
+ * Returns the Hijri date using the 'hijri-converter' library.
+ * Reliable, standard, and works on all devices (Mobile/Desktop).
+ */
+export function formatHijriDate(date: Date): string {
+  try {
+    // 1. Get Gregorian components
+    const year = date.getFullYear();
+    const month = date.getMonth() + 1; // Library expects 1-12
+
+    const day = date.getDate();
+
+    // 2. Convert using the library
+    const hijri = toHijri(year, month, day);
+
+    // 3. Format the result
+    // hijri.hy = Hijri Year, hijri.hm = Hijri Month (1-12), hijri.hd = Hijri Day
+    const monthName = HIJRI_MONTHS[hijri.hm - 1]; // Array is 0-indexed
+
+    return `${monthName} ${hijri.hd}, ${hijri.hy} AH`;
+  } catch (e) {
+    return ""; // Safe fallback
+  }
 }

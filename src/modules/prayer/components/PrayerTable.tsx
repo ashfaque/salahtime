@@ -75,7 +75,7 @@ export function PrayerTable({ prayers, currentPrayerId, date }: PrayerTableProps
 
       {/* Down Arrow to Makruh Section */}
       <button onClick={scrollToMakruh} className="absolute -bottom-16 animate-bounce p-2 hover:bg-foreground/5 rounded-full cursor-pointer" aria-label="See Forbidden Times">
-        <ArrowDownIcon className="w-6 h-6 opacity-30 hover:opacity-100 transition-opacity" />
+        <ArrowDownIcon className="w-6 h-6 opacity-50" />
       </button>
     </div>
   );

@@ -1,3 +1,4 @@
+import { memo, useMemo } from "react";
 import { Coordinates } from "adhan";
 import { formatTime } from "@/lib/date-utils";
 import { ArrowUpIcon } from "@/components/ui/Icon";
@@ -8,37 +9,43 @@ interface MakruhCardProps {
   coords: Coordinates;
 }
 
-export function MakruhCard({ prayers, coords }: MakruhCardProps) {
+// Wrapped in 'memo' to prevent re-rendering every second when the parent ticks
+export const MakruhCard = memo(function MakruhCard({ prayers, coords }: MakruhCardProps) {
+  // Memoize the calculation so it only runs when coords change, not every second
+  const bufferMins = useMemo(() => {
+    if (!coords) return 20; // HC: Fallback to 20 mins if coords missing
+
+    const calculateMakruhBuffer = (lat: number) => {
+      // 1. Convert Latitude to Radians (Math functions need Radians)
+      const latRad = (Math.abs(lat) * Math.PI) / 180;
+
+      // 2. Base Calculation:
+      // Sun needs to rise ~3.5 degrees to be "Spear Length".
+      // Earth rotates 1 degree every 4 minutes.
+      // Base Time = 3.5 * 4 = 14 minutes.
+      const baseDegrees = 3.5;
+      const minsPerDegree = 4;
+      const baseMinutes = baseDegrees * minsPerDegree;
+
+      // 3. Adjust for Latitude (Sun moves slower at high lat)
+      // Formula: Time / cos(latitude)
+      // We limit cos() to 0.5 (60 degrees) to prevent extreme values in Norway/Alaska
+      const cosLat = Math.max(0.5, Math.cos(latRad));
+      const actualMinutes = baseMinutes / cosLat;
+
+      // 4. Add Safety Buffer (User requested 5 mins)
+      const safetyBuffer = MAKRUH_BUFFER_MINUTES;
+
+      // Return total rounded minutes
+      console.log(`Makruh buffer at lat ${lat.toFixed(2)}°: ${Math.round(actualMinutes + safetyBuffer)} mins`);
+      return Math.round(actualMinutes + safetyBuffer);
+    };
+
+    // Calculate the buffer for this user
+    return calculateMakruhBuffer(coords.latitude);
+  }, [coords?.latitude]); // Only re-calculate if latitude changes
+
   if (!prayers) return null;
-
-  const calculateMakruhBuffer = (lat: number) => {
-    // 1. Convert Latitude to Radians (Math functions need Radians)
-    const latRad = (Math.abs(lat) * Math.PI) / 180;
-
-    // 2. Base Calculation:
-    // Sun needs to rise ~3.5 degrees to be "Spear Length".
-    // Earth rotates 1 degree every 4 minutes.
-    // Base Time = 3.5 * 4 = 14 minutes.
-    const baseDegrees = 3.5;
-    const minsPerDegree = 4;
-    const baseMinutes = baseDegrees * minsPerDegree;
-
-    // 3. Adjust for Latitude (Sun moves slower at high lat)
-    // Formula: Time / cos(latitude)
-    // We limit cos() to 0.5 (60 degrees) to prevent extreme values in Norway/Alaska
-    const cosLat = Math.max(0.5, Math.cos(latRad));
-    const actualMinutes = baseMinutes / cosLat;
-
-    // 4. Add Safety Buffer (User requested 5 mins)
-    const safetyBuffer = MAKRUH_BUFFER_MINUTES;
-
-    // Return total rounded minutes
-    console.log(`Makruh buffer at lat ${lat.toFixed(2)}°: ${Math.round(actualMinutes + safetyBuffer)} mins`);
-    return Math.round(actualMinutes + safetyBuffer);
-  };
-
-  // Calculate the buffer for this user
-  const bufferMins = coords ? calculateMakruhBuffer(coords.latitude) : 20; // HC: Fallback to 20 mins if coords missing
 
   // Helper to add/subtract minutes
   const addMinutes = (date: Date, minutes: number) => new Date(date.getTime() + minutes * 60000);
@@ -100,4 +107,4 @@ export function MakruhCard({ prayers, coords }: MakruhCardProps) {
       </div>
     </div>
   );
-}
+});

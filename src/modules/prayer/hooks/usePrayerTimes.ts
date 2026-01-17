@@ -33,10 +33,12 @@ export function usePrayerTimes(date: Date, coords: Coordinates, nowParam?: Date,
     // A. Calculate Today's Schedule
     const prayers = new PrayerTimes(coords, date, params);
 
+    const isFriday = date.getDay() === 5;
+
     const list: PrayerItem[] = [
       { name: "Fajr", time: prayers.fajr },
       { name: "Sunrise", time: prayers.sunrise, isSecondary: true },
-      { name: "Dhuhr", time: prayers.dhuhr },
+      { name: isFriday ? "Jumu'a" : "Dhuhr", time: prayers.dhuhr },
       { name: "Asr", time: prayers.asr },
       { name: "Maghrib", time: prayers.maghrib },
       { name: "Isha", time: prayers.isha },

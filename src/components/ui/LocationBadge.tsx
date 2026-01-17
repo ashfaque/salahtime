@@ -110,9 +110,9 @@ export function LocationBadge({ coords, source, loading, accuracy, error, onRetr
   if (loading) return null;
 
   return (
-    <div className="absolute top-20 left-1/2 -translate-x-1/2 text-center z-40 pointer-events-none">
-      <div className="inline-flex items-center gap-2 bg-background/60 backdrop-blur-sm px-3 py-1 rounded-full text-[11px] text-foreground/80 border border-foreground/10 shadow-sm pointer-events-auto">
-        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-foreground/70" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden>
+    <div className="absolute top-20 left-1/2 -translate-x-1/2 text-center z-40 pointer-events-none flex flex-col items-center">
+      <div className="inline-flex items-center gap-2 bg-background/60 backdrop-blur-sm px-4 py-1.5 rounded-full text-[11px] text-foreground/80 border border-foreground/10 shadow-sm pointer-events-auto w-max max-w-[85vw]">
+        <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5 text-foreground/70 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5} aria-hidden>
           <path strokeLinecap="round" strokeLinejoin="round" d="M12 11.5a2.5 2.5 0 100-5 2.5 2.5 0 000 5z" />
           <path strokeLinecap="round" strokeLinejoin="round" d="M21 12c0 5-9 10-9 10S3 17 3 12a9 9 0 1118 0z" />
         </svg>
@@ -124,8 +124,10 @@ export function LocationBadge({ coords, source, loading, accuracy, error, onRetr
           {typeof accuracy === "number" && <span className="text-[10px] text-foreground/60">{Math.round(accuracy)}m</span>}
         </span>
 
-        {error && <div className="ml-2 text-[10px] text-red-500/80">{error}</div>}
+        {error && <div className="ml-2 text-[10px] text-red-500/80 leading-tight">{error}</div>}
       </div>
+
+      {/* Breathing Orange Disclaimer (Only if NOT GPS) */}
       {source !== "gps" && !fetching && (
         <button onClick={onRetry} className="mt-4 text-[13px] italic text-orange-500/90 animate-pulse pointer-events-auto hover:text-orange-600 transition-colors max-w-xs leading-tight">
           Timings may vary. Tap to enable GPS for precision.

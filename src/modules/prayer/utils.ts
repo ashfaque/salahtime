@@ -6,11 +6,12 @@ export function getRecommendedMethod(coords: Coordinates) {
 
   // Approximate Bounding Box for Indian Subcontinent (India, Pak, BD)
   // Latitude: 6°N to 37°N, Longitude: 68°E to 97°E
-  const isIndianSubcontinent = lat >= 6 && lat <= 37 && lon >= 68 && lon <= 97;
+  // const isIndianSubcontinent = lat >= 6 && lat <= 37 && lon >= 68 && lon <= 97;
+  const isIndianSubcontinent = lat >= 5 && lat <= 38 && lon >= 60 && lon <= 98;
 
   if (isIndianSubcontinent) {
-    // Karachi is the standard for India/Pakistan (University of Islamic Sciences, Karachi)
-    return "Karachi";
+    // JamiaUloomIslamia is the standard for South Asia (University of Islamic Sciences, Banuri Town, Karachi)
+    return "JamiaUloomIslamia";
   }
 
   // Default global fallback
@@ -20,7 +21,7 @@ export function getRecommendedMethod(coords: Coordinates) {
 // Map string names to Adhan objects
 export function getMethodObj(name: string) {
   switch (name) {
-    case "Karachi":
+    case "JamiaUloomIslamia":
       return CalculationMethod.Karachi();
     case "MoonsightingCommittee":
       return CalculationMethod.MoonsightingCommittee();

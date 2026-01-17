@@ -69,7 +69,7 @@ export function SettingsModal({ isOpen, onClose, madhab, onMadhabChange, method,
             onChange={(e) => onMethodChange(e.target.value)}
             className="w-full bg-background text-foreground border border-foreground/10 rounded-lg p-3 text-sm focus:outline-none focus:ring-2 focus:ring-foreground/20 [&>*]:bg-background [&>*]:text-foreground"
           >
-            <option value="Karachi">Karachi (Indian Subcontinent)</option>
+            <option value="JamiaUloomIslamia">Jamia Uloom-ul-Islamia (Indian Subcontinent)</option>
             <option value="MoonsightingCommittee">Moonsighting Committee</option>
             <option value="MuslimWorldLeague">Muslim World League</option>
             <option value="Egyptian">Egyptian General Authority</option>

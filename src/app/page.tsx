@@ -13,6 +13,7 @@ import { LocationBadge } from "@/components/ui/LocationBadge";
 import { Toast } from "@/components/ui/Toast";
 import { useOnlineStatus } from "@/modules/prayer/hooks/useOnlineStatus";
 import { MakruhCard } from "@/modules/prayer/components/MakruhCard";
+import { useHijriDate } from "@/modules/prayer/hooks/useHijriDate";
 
 export default function Home() {
   // Initialize `date` to null to avoid server/client hydration mismatch
@@ -69,6 +70,16 @@ export default function Home() {
     method // <-- Dynamic Method
   );
 
+  // Extract Maghrib time for the flip logic
+  const maghribTime = prayers?.find((p) => p.name === "Maghrib")?.time;
+
+  const hijriData = useHijriDate({
+    date: date || now,
+    coords,
+    method,
+    maghribTime,
+  });
+
   if (!date) return null;
 
   return (
@@ -101,7 +112,7 @@ export default function Home() {
           {/* Show error if they denied permission (optional UX improvement) */}
           {/* {locError && <div className="absolute top-20 bg-red-500/10 text-red-500 px-4 py-2 rounded-full text-xs border border-red-500/20">Using default location (New Delhi)</div>} */}
 
-          <PrayerHero date={date} setDate={setDate} nextPrayer={nextPrayer} currentPrayer={currentPrayer} qibla={qibla} />
+          <PrayerHero date={date} setDate={setDate} nextPrayer={nextPrayer} currentPrayer={currentPrayer} qibla={qibla} hijriData={hijriData} />
         </section>
 
         <section id="table-section" className="h-dvh w-full snap-start snap-always flex flex-col items-center justify-center p-6 relative">

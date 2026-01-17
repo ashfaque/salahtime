@@ -38,3 +38,22 @@ export function getMethodObj(name: string) {
       return CalculationMethod.MoonsightingCommittee();
   }
 }
+
+export function getMethodId(name: string): number {
+  switch (name) {
+    case "JamiaUloomIslamia":
+      return 1; // Karachi
+    case "MoonsightingCommittee":
+      return 15; // Standard
+    case "Egyptian":
+      return 5;
+    case "UmmAlQura":
+      return 4;
+    case "NorthAmerica":
+      return 2;
+    case "MuslimWorldLeague":
+      return 3;
+    default:
+      return 15;
+  }
+}

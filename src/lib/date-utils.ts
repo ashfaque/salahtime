@@ -114,18 +114,21 @@ export function formatInputDate(date: Date): string {
  * Returns the Hijri date using the 'hijri-converter' library.
  * Reliable, standard, and works on all devices (Mobile/Desktop).
  */
-export function formatHijriDate(date: Date): string {
+export function formatHijriDate(date: Date, adjustment: number = 0): string {
   try {
-    // 1. Get Gregorian components
-    const year = date.getFullYear();
-    const month = date.getMonth() + 1; // Library expects 1-12
+    // Apply Adjustment
+    const adjustedDate = new Date(date);
+    adjustedDate.setDate(adjustedDate.getDate() + adjustment);
 
-    const day = date.getDate();
+    // Get Gregorian components
+    const year = adjustedDate.getFullYear();
+    const month = adjustedDate.getMonth() + 1; // Library expects 1-12
+    const day = adjustedDate.getDate();
 
-    // 2. Convert using the library
+    // Convert using the library
     const hijri = toHijri(year, month, day);
 
-    // 3. Format the result
+    // Format the result
     // hijri.hy = Hijri Year, hijri.hm = Hijri Month (1-12), hijri.hd = Hijri Day
     const monthName = HIJRI_MONTHS[hijri.hm - 1]; // Array is 0-indexed
 

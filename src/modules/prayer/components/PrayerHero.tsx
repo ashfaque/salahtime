@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { ArrowDownIcon, ChevronLeft, ChevronRight } from "@/components/ui/Icon";
-import { formatDate, formatTime, formatHijriDate } from "@/lib/date-utils";
+import { formatDate, formatTime } from "@/lib/date-utils";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Countdown } from "@/components/ui/Countdown";
 import { TIMEOUTS } from "@/lib/constants";
@@ -13,9 +13,10 @@ interface PrayerHeroProps {
   nextPrayer: { name: string; time: Date } | null;
   currentPrayer: { name: string; time: Date } | null;
   qibla: number;
+  hijriData: { text: string; isEstimated: boolean };
 }
 
-export function PrayerHero({ date, setDate, nextPrayer, currentPrayer, qibla }: PrayerHeroProps) {
+export function PrayerHero({ date, setDate, nextPrayer, currentPrayer, qibla, hijriData }: PrayerHeroProps) {
   // 1. ALWAYS start in loading state when this component is born
   const [isLoading, setIsLoading] = useState(true);
 
@@ -74,7 +75,16 @@ export function PrayerHero({ date, setDate, nextPrayer, currentPrayer, qibla }: 
 
         {/* Hijri Date Subtitle */}
         {/* 'text-foreground/60' makes it subtle. 'font-mono' gives it a clean data look. */}
-        <span className="text-sm text-foreground/60 font-mono -mt-1 tracking-wide">{formatHijriDate(date)}</span>
+        <span
+          className={`text-sm font-mono -mt-1 tracking-wide flex items-center gap-2 transition-opacity duration-300
+            ${hijriData.isEstimated ? "text-foreground/40 italic" : "text-foreground/60"}
+          `}
+          title={hijriData.isEstimated ? "Estimated (Approximation)" : "Verified by Authority"}
+        >
+          {/* Show tilde ~ if estimated */}
+          {hijriData.isEstimated && <span>~</span>}
+          {hijriData.text || "Loading Hijri Date..."}
+        </span>
 
         {/* DISPLAY QIBLA */}
         <span className="text-[10px] text-foreground/40 font-mono tracking-wider uppercase mt-1">QIBLA: {Math.round(qibla)}° N</span>

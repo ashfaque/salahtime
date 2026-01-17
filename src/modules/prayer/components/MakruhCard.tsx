@@ -1,12 +1,44 @@
+import { Coordinates } from "adhan";
 import { formatTime } from "@/lib/date-utils";
 import { ArrowUpIcon } from "@/components/ui/Icon";
+import { MAKRUH_BUFFER_MINUTES } from "@/lib/constants";
 
 interface MakruhCardProps {
   prayers: { name: string; time: Date }[] | null;
+  coords: Coordinates;
 }
 
-export function MakruhCard({ prayers }: MakruhCardProps) {
+export function MakruhCard({ prayers, coords }: MakruhCardProps) {
   if (!prayers) return null;
+
+  const calculateMakruhBuffer = (lat: number) => {
+    // 1. Convert Latitude to Radians (Math functions need Radians)
+    const latRad = (Math.abs(lat) * Math.PI) / 180;
+
+    // 2. Base Calculation:
+    // Sun needs to rise ~3.5 degrees to be "Spear Length".
+    // Earth rotates 1 degree every 4 minutes.
+    // Base Time = 3.5 * 4 = 14 minutes.
+    const baseDegrees = 3.5;
+    const minsPerDegree = 4;
+    const baseMinutes = baseDegrees * minsPerDegree;
+
+    // 3. Adjust for Latitude (Sun moves slower at high lat)
+    // Formula: Time / cos(latitude)
+    // We limit cos() to 0.5 (60 degrees) to prevent extreme values in Norway/Alaska
+    const cosLat = Math.max(0.5, Math.cos(latRad));
+    const actualMinutes = baseMinutes / cosLat;
+
+    // 4. Add Safety Buffer (User requested 5 mins)
+    const safetyBuffer = MAKRUH_BUFFER_MINUTES;
+
+    // Return total rounded minutes
+    console.log(`Makruh buffer at lat ${lat.toFixed(2)}°: ${Math.round(actualMinutes + safetyBuffer)} mins`);
+    return Math.round(actualMinutes + safetyBuffer);
+  };
+
+  // Calculate the buffer for this user
+  const bufferMins = coords ? calculateMakruhBuffer(coords.latitude) : 20; // Fallback to 20 mins if coords missing
 
   // Helper to add/subtract minutes
   const addMinutes = (date: Date, minutes: number) => new Date(date.getTime() + minutes * 60000);
@@ -22,18 +54,18 @@ export function MakruhCard({ prayers }: MakruhCardProps) {
     {
       label: "Sunrise (Ishraq)",
       start: sunrise, // From Sunrise...
-      end: addMinutes(sunrise, 15), // HC: ...until 15 mins after
+      end: addMinutes(sunrise, bufferMins),
       desc: "Wait until the sun has fully risen",
     },
     {
       label: "Zawal (Noon)",
-      start: addMinutes(dhuhr, -10), // HC: 10 mins before Dhuhr...
+      start: addMinutes(dhuhr, -10), // HC: 10 mins before Dhuhr. Zawal is usually standard 10 min buffer everywhere
       end: dhuhr, // ...until Dhuhr starts
       desc: "Sun at its absolute highest peak",
     },
     {
       label: "Sunset (Ghurub)",
-      start: addMinutes(maghrib, -15), // HC: 15 mins before Maghrib...
+      start: addMinutes(maghrib, -bufferMins),
       end: maghrib, // ...until Maghrib starts
       desc: "When the sun turns yellow before setting",
     },
@@ -51,7 +83,7 @@ export function MakruhCard({ prayers }: MakruhCardProps) {
         <ArrowUpIcon className="w-6 h-6 opacity-50" />
       </button>
 
-      <h3 className="text-xs font-bold uppercase tracking-widest text-foreground/50 mb-6 text-center">🚫 Forbidden (Makruh) Times</h3>
+      <h3 className="text-xs font-bold uppercase tracking-widest text-foreground/50 mb-6 text-center">🚫 Approximate Forbidden (Makruh) Times</h3>
 
       <div className="w-full bg-orange-500/5 border border-orange-500/10 rounded-xl overflow-hidden divide-y divide-orange-500/10 shadow-sm">
         {times.map((item) => (

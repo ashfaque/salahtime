@@ -110,7 +110,7 @@ export default function Home() {
 
         {/* MAKRUH (Snap Page) */}
         <section id="makruh-section-container" className="h-dvh w-full snap-start snap-always flex flex-col items-center justify-center p-6 relative">
-          <MakruhCard prayers={prayers} />
+          <MakruhCard prayers={prayers} coords={coords} />
         </section>
       </main>
 

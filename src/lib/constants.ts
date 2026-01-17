@@ -4,3 +4,4 @@ export const THEME_COLORS = {
   light: "#ededed", // User defined light
   dark: "#0a0a0a", // User defined dark
 };
+export const MAKRUH_BUFFER_MINUTES = 5;

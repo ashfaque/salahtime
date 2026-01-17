@@ -1,9 +1,9 @@
 "use client"; // REQUIRED: Because we use interactivity
 
 import { CalendarIcon, SettingsIcon } from "@/components/ui/Icon";
-import { getTimezoneShort, formatInputDate } from "@/lib/date-utils";
+import { formatInputDate } from "@/lib/date-utils"; // getTimezoneShort
 import { useRef } from "react";
-import { useTheme } from "@/modules/prayer/hooks/useTheme";
+// import { useTheme } from "@/modules/prayer/hooks/useTheme";
 
 // interface HeaderProps {
 //   currentDate?: Date;
@@ -24,7 +24,7 @@ interface HeaderProps {
 
 export function Header({ currentDate, onDateChange, locationSource, onRetryLocation, onOpenSettings }: HeaderProps) {
   // accuracy
-  const { theme, toggleTheme } = useTheme();
+  // const { theme, toggleTheme } = useTheme();
   const dateInputRef = useRef<HTMLInputElement>(null);
 
   // Function to open the hidden date picker
@@ -49,7 +49,7 @@ export function Header({ currentDate, onDateChange, locationSource, onRetryLocat
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between p-4 bg-background/80 backdrop-blur-md border-b border-foreground/10 h-16 transition-colors">
-      {/* 1. App Logo */}
+      {/* App Logo */}
       <div
         className="font-bold text-xl tracking-tighter cursor-pointer"
         onClick={() => onDateChange && onDateChange(new Date())} // Click logo to reset to Today
@@ -57,30 +57,13 @@ export function Header({ currentDate, onDateChange, locationSource, onRetryLocat
         Salah<span className="opacity-50">Time</span>
       </div>
 
-      {/* 2. Center Controls */}
-      <div className="flex items-center gap-4 text-sm font-mono">
-        {/* The Calendar Button */}
-        <div className="relative">
-          <button onClick={handleCalendarClick} className="p-2 hover:bg-foreground/5 rounded-full transition-colors active:scale-95" aria-label="Open Calendar">
-            <CalendarIcon className="w-5 h-5" />
-          </button>
-
-          {/* HIDDEN INPUT: This is the invisible trigger */}
-          <input
-            ref={dateInputRef}
-            type="date"
-            className="absolute top-0 left-0 w-0 h-0 opacity-0 pointer-events-none"
-            value={currentDate ? formatInputDate(currentDate) : ""}
-            onChange={handleDateChange}
-          />
-        </div>
-
-        {/* Dynamic Timezone Badge */}
+      {/* Centered Location Badge */}
+      <div className="absolute left-1/2 -translate-x-1/2">
         {/* SMART LOCATION BADGE */}
         {locationSource === "gps" ? (
           // Case A: We have perfect GPS. Show Timezone calmly.
           <div className="px-3 py-1 border border-green-500/20 bg-green-500/5 text-green-600 dark:text-green-400 rounded-full text-xs font-bold tracking-wide flex items-center gap-1">
-            <span>📍</span> {getTimezoneShort()}
+            <span>📍 Using GPS</span> {/* {getTimezoneShort()} */}
           </div>
         ) : (
           // Case B: We are on IP or Default. Show "Enable GPS" button politely.
@@ -92,15 +75,34 @@ export function Header({ currentDate, onDateChange, locationSource, onRetryLocat
             <span>📡</span> {locationSource === "ip" ? "Approx Loc" : "Enable GPS"}
           </button>
         )}
+      </div>
+
+      {/* Right Side Controls (Calendar + Settings) */}
+      <div className="flex items-center gap-2">
+        {/* Calendar Button (Moved here from center) */}
+        <div className="relative">
+          <button onClick={handleCalendarClick} className="p-2 hover:bg-foreground/5 rounded-full transition-colors active:scale-95 text-foreground/70" aria-label="Open Calendar">
+            <CalendarIcon className="w-5 h-5" />
+          </button>
+
+          <input
+            ref={dateInputRef}
+            type="date"
+            className="absolute top-0 left-0 w-0 h-0 opacity-0 pointer-events-none"
+            value={currentDate ? formatInputDate(currentDate) : ""}
+            onChange={handleDateChange}
+          />
+        </div>
+
+        {/* Settings Button (Moved here from center) */}
         <button onClick={onOpenSettings} className="p-2 hover:bg-foreground/5 rounded-full transition-colors active:scale-95 text-foreground/70" aria-label="Settings">
           <SettingsIcon className="w-5 h-5" />
         </button>
       </div>
-      {/* 3. Accuracy Indicator (small) */}
-      {/* <div className="mr-3 text-[12px] text-foreground/60">{typeof accuracy === "number" && locationSource === "gps" ? `${Math.round(accuracy)}m` : null}</div> */}
 
-      {/* 4. Dark Mode Toggle */}
-      <button
+      {/* Accuracy Indicator (small) */}
+      {/* <div className="mr-3 text-[12px] text-foreground/60">{typeof accuracy === "number" && locationSource === "gps" ? `${Math.round(accuracy)}m` : null}</div> */}
+      {/* <button
         onClick={toggleTheme}
         className={`w-12 h-6 rounded-full relative transition-colors focus:outline-none focus:ring-2 focus:ring-foreground/20 ${
           theme === "dark" ? "bg-foreground/20" : "bg-foreground/10"
@@ -112,10 +114,9 @@ export function Header({ currentDate, onDateChange, locationSource, onRetryLocat
             theme === "dark" ? "left-7" : "left-1"
           }`}
         >
-          {/* Optional: Tiny icons inside the circle */}
           {theme === "dark" ? <span className="text-[8px]">🌙</span> : <span className="text-[8px]">☀️</span>}
         </div>
-      </button>
+      </button> */}
     </header>
   );
 }

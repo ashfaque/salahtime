@@ -92,7 +92,7 @@ export default function Home() {
             in the 'Optical Center' (slightly higher than math center). */}
         {/* Added 'h-dvh' and 'snap-always' */}
         <section id="hero-section" className="h-dvh w-full snap-start snap-always flex flex-col items-center justify-center p-6 pt-16 pb-16 relative">
-          <LocationBadge coords={coords} source={source} loading={loading} accuracy={accuracy} error={error} />
+          <LocationBadge coords={coords} source={source} loading={loading} accuracy={accuracy} error={error} onRetry={requestLocation} />
           <Toast message={error} visible={!!error} />
           <Toast message="No internet connection. Using offline calculations." visible={!isOnline} duration={0} className="top-20 right-4" />
           {/* Show a small loading text if we are still finding the user */}

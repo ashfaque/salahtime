@@ -2,6 +2,7 @@
 
 import { useRef, useEffect } from "react";
 import { Madhab } from "adhan";
+import { useTheme } from "@/modules/prayer/hooks/useTheme";
 
 // Define the type again here for safety
 type MadhabValue = typeof Madhab.Hanafi | typeof Madhab.Shafi;
@@ -17,6 +18,7 @@ interface SettingsModalProps {
 
 export function SettingsModal({ isOpen, onClose, madhab, onMadhabChange, method, onMethodChange }: SettingsModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const { theme, toggleTheme } = useTheme();
 
   // Close when clicking outside
   useEffect(() => {
@@ -35,8 +37,29 @@ export function SettingsModal({ isOpen, onClose, madhab, onMadhabChange, method,
     <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 animate-in fade-in duration-200">
       <div ref={modalRef} className="bg-background border border-foreground/10 rounded-2xl shadow-2xl w-full max-w-sm p-6 relative">
         <h2 className="text-xl font-bold mb-6">Settings</h2>
-
-        {/* 1. Asr Calculation (Madhab) */}
+        {/* Appearance Section */}
+        <div className="mb-6">
+          <label className="block text-sm font-medium text-foreground/70 mb-2">Appearance</label>
+          <div className="flex bg-foreground/5 p-1 rounded-lg">
+            <button
+              onClick={() => theme === "dark" && toggleTheme()}
+              className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${
+                theme === "light" ? "bg-background shadow text-foreground" : "text-foreground/50 hover:text-foreground/80"
+              }`}
+            >
+              Light
+            </button>
+            <button
+              onClick={() => theme === "light" && toggleTheme()}
+              className={`flex-1 py-2 text-sm font-bold rounded-md transition-all ${
+                theme === "dark" ? "bg-background shadow text-foreground" : "text-foreground/50 hover:text-foreground/80"
+              }`}
+            >
+              Dark
+            </button>
+          </div>
+        </div>
+        {/* Asr Calculation (Madhab) */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-foreground/70 mb-2">Asr Calculation (Madhab)</label>
           <div className="flex bg-foreground/5 p-1 rounded-lg">
@@ -61,7 +84,7 @@ export function SettingsModal({ isOpen, onClose, madhab, onMadhabChange, method,
           <p className="text-[10px] text-foreground/40 mt-2 text-center">&quot;Standard&quot; covers Shafi&apos;i, Maliki, and Hanbali.</p>
         </div>
 
-        {/* 2. Calculation Method */}
+        {/* Calculation Method */}
         <div className="mb-6">
           <label className="block text-sm font-medium text-foreground/70 mb-2">Calculation Method</label>
           <select

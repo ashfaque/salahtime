@@ -10,9 +10,10 @@ type Props = {
   loading?: boolean;
   accuracy?: number | null;
   error?: string | null;
+  onRetry?: () => void;
 };
 
-export function LocationBadge({ coords, source, loading, accuracy, error }: Props) {
+export function LocationBadge({ coords, source, loading, accuracy, error, onRetry }: Props) {
   const [name, setName] = useState<string | null>(null);
   const [fetching, setFetching] = useState(false);
 
@@ -125,6 +126,11 @@ export function LocationBadge({ coords, source, loading, accuracy, error }: Prop
 
         {error && <div className="ml-2 text-[10px] text-red-500/80">{error}</div>}
       </div>
+      {source !== "gps" && !fetching && (
+        <button onClick={onRetry} className="mt-4 text-[13px] italic text-orange-500/90 animate-pulse pointer-events-auto hover:text-orange-600 transition-colors max-w-xs leading-tight">
+          Timings may vary. Tap to enable GPS for precision.
+        </button>
+      )}
     </div>
   );
 }

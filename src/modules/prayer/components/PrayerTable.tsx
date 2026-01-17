@@ -70,7 +70,7 @@ export function PrayerTable({ prayers, currentPrayerId, date }: PrayerTableProps
 
       {/* Tiny, subtle disclaimer */}
       <p className="text-xs text-foreground/60 italic mt-4 text-center max-w-xs leading-relaxed">
-        * Suhoor ends at Fajr start. Generally, each prayer time lasts until the next one begins.
+        * Suhoor ends 6 mins before Fajr as a precaution. Prayers last until the next one begins (Fajr ends at Sunrise).
       </p>
 
       {/* Down Arrow to Makruh Section */}

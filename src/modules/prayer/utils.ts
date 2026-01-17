@@ -1,4 +1,5 @@
 import { Coordinates, CalculationMethod } from "adhan";
+import { SOUTH_ASIA_BOUNDS } from "@/lib/constants";
 
 // Helper to determine the best calculation method based on location
 export function getRecommendedMethod(coords: Coordinates) {
@@ -7,7 +8,7 @@ export function getRecommendedMethod(coords: Coordinates) {
   // Approximate Bounding Box for Indian Subcontinent (India, Pak, BD)
   // Latitude: 6°N to 37°N, Longitude: 68°E to 97°E
   // const isIndianSubcontinent = lat >= 6 && lat <= 37 && lon >= 68 && lon <= 97;
-  const isIndianSubcontinent = lat >= 5 && lat <= 38 && lon >= 60 && lon <= 98;
+  const isIndianSubcontinent = lat >= SOUTH_ASIA_BOUNDS.minLat && lat <= SOUTH_ASIA_BOUNDS.maxLat && lon >= SOUTH_ASIA_BOUNDS.minLon && lon <= SOUTH_ASIA_BOUNDS.maxLon;
 
   if (isIndianSubcontinent) {
     // JamiaUloomIslamia is the standard for South Asia (University of Islamic Sciences, Banuri Town, Karachi)

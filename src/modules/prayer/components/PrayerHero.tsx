@@ -5,6 +5,7 @@ import { ArrowDownIcon, ChevronLeft, ChevronRight } from "@/components/ui/Icon";
 import { formatDate, formatTime, formatHijriDate } from "@/lib/date-utils";
 import { Skeleton } from "@/components/ui/Skeleton";
 import { Countdown } from "@/components/ui/Countdown";
+import { TIMEOUTS } from "@/lib/constants";
 
 interface PrayerHeroProps {
   date: Date;
@@ -22,7 +23,7 @@ export function PrayerHero({ date, setDate, nextPrayer, currentPrayer, qibla }: 
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 500);
+    }, TIMEOUTS.loadingDelay);
     return () => clearTimeout(timer);
   }, []);
 

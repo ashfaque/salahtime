@@ -1,6 +1,8 @@
+import { CACHE_LIMITS } from "@/lib/constants";
+
 const CACHE_PREFIX = "loc_";
 const INDEX_KEY = "loc_index";
-const MAX_CACHE_ITEMS = 100;
+const MAX_CACHE_ITEMS = CACHE_LIMITS.maxLocations;
 
 type IndexEntry = { key: string; time: number };
 

@@ -2,9 +2,10 @@ import { useState, useEffect, useRef, useCallback } from "react";
 import { Coordinates } from "adhan";
 import { fetchFromProviders } from "@/modules/prayer/lib/ipProviders";
 import { storage } from "@/lib/storage";
+import { DEFAULT_LOCATION, TIMEOUTS } from "@/lib/constants";
 
 // Default: New Delhi (Fallback) - module-level so hooks are stable
-const DEFAULT_COORDS = new Coordinates(28.6139, 77.209);
+const DEFAULT_COORDS = new Coordinates(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lon);
 
 export function useGeolocation() {
   // Default coords
@@ -135,7 +136,7 @@ export function useGeolocation() {
             fetchPassiveLocation();
           }
         },
-        { enableHighAccuracy: true, timeout: 15000, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: TIMEOUTS.gpsHigh, maximumAge: 0 }
       );
     };
 
@@ -164,7 +165,7 @@ export function useGeolocation() {
             fetchPassiveLocation();
           }
         },
-        { enableHighAccuracy: false, timeout: 10000, maximumAge: 0 }
+        { enableHighAccuracy: false, timeout: TIMEOUTS.gpsLow, maximumAge: 0 }
       );
     };
 

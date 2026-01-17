@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { TIMEOUTS } from "@/lib/constants";
 
 type Props = {
   message?: string | null;
@@ -9,7 +10,7 @@ type Props = {
   className?: string; // Allow custom positioning
 };
 
-export function Toast({ message, visible = false, duration = 5000, className }: Props) {
+export function Toast({ message, visible = false, duration = TIMEOUTS.toast, className }: Props) {
   const [show, setShow] = useState(visible && !!message);
 
   useEffect(() => {

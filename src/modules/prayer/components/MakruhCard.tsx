@@ -1,7 +1,7 @@
 import { Coordinates } from "adhan";
 import { formatTime } from "@/lib/date-utils";
 import { ArrowUpIcon } from "@/components/ui/Icon";
-import { MAKRUH_BUFFER_MINUTES } from "@/lib/constants";
+import { MAKRUH_BUFFER_MINUTES, ZAWAL_BUFFER_MINUTES } from "@/lib/constants";
 
 interface MakruhCardProps {
   prayers: { name: string; time: Date }[] | null;
@@ -38,7 +38,7 @@ export function MakruhCard({ prayers, coords }: MakruhCardProps) {
   };
 
   // Calculate the buffer for this user
-  const bufferMins = coords ? calculateMakruhBuffer(coords.latitude) : 20; // Fallback to 20 mins if coords missing
+  const bufferMins = coords ? calculateMakruhBuffer(coords.latitude) : 20; // HC: Fallback to 20 mins if coords missing
 
   // Helper to add/subtract minutes
   const addMinutes = (date: Date, minutes: number) => new Date(date.getTime() + minutes * 60000);
@@ -59,7 +59,7 @@ export function MakruhCard({ prayers, coords }: MakruhCardProps) {
     },
     {
       label: "Zawal (Noon)",
-      start: addMinutes(dhuhr, -10), // HC: 10 mins before Dhuhr. Zawal is usually standard 10 min buffer everywhere
+      start: addMinutes(dhuhr, -ZAWAL_BUFFER_MINUTES),
       end: dhuhr, // ...until Dhuhr starts
       desc: "Sun at its absolute highest peak",
     },

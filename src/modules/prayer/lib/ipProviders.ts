@@ -1,3 +1,5 @@
+import { TIMEOUTS } from "@/lib/constants";
+
 export type IpProvider = {
   name: string;
   url: string;
@@ -73,7 +75,7 @@ const fetchWithTimeout = async (input: RequestInfo, ms = 4000) => {
 };
 
 // 4 seconds
-export async function fetchFromProviders(timeoutMs = 4000) {
+export async function fetchFromProviders(timeoutMs = TIMEOUTS.ipFetch) {
   for (const prov of moduleIpProviders) {
     try {
       const res = await fetchWithTimeout(prov.url, timeoutMs);

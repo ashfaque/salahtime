@@ -101,7 +101,7 @@ export default function Home() {
           {/* Show error if they denied permission (optional UX improvement) */}
           {/* {locError && <div className="absolute top-20 bg-red-500/10 text-red-500 px-4 py-2 rounded-full text-xs border border-red-500/20">Using default location (New Delhi)</div>} */}
 
-          <PrayerHero key={date.getTime()} date={date} setDate={setDate} nextPrayer={nextPrayer} currentPrayer={currentPrayer} qibla={qibla} />
+          <PrayerHero date={date} setDate={setDate} nextPrayer={nextPrayer} currentPrayer={currentPrayer} qibla={qibla} />
         </section>
 
         <section id="table-section" className="h-dvh w-full snap-start snap-always flex flex-col items-center justify-center p-6 relative">

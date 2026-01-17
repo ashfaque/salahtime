@@ -12,7 +12,7 @@ export function MakruhCard({ prayers }: MakruhCardProps) {
   const addMinutes = (date: Date, minutes: number) => new Date(date.getTime() + minutes * 60000);
   // 1. Find the reference times from your existing schedule
   const sunrise = prayers.find((p) => p.name === "Sunrise")?.time;
-  const dhuhr = prayers.find((p) => p.name === "Dhuhr")?.time;
+  const dhuhr = prayers.find((p) => p.name === "Dhuhr" || p.name === "Jumu'a")?.time;
   const maghrib = prayers.find((p) => p.name === "Maghrib")?.time;
 
   if (!sunrise || !dhuhr || !maghrib) return null;

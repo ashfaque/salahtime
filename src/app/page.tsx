@@ -67,7 +67,7 @@ export default function Home() {
     coords,
     now,
     madhab, // <-- Dynamic Madhab
-    method // <-- Dynamic Method
+    method, // <-- Dynamic Method
   );
 
   // Extract Maghrib time for the flip logic
@@ -78,6 +78,7 @@ export default function Home() {
     coords,
     method,
     maghribTime,
+    now,
   });
 
   if (!date) return null;

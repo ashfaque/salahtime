@@ -11,11 +11,20 @@ interface UseHijriDateProps {
   coords: Coordinates;
   method: string;
   maghribTime?: Date;
+  now?: Date;
 }
 
-export function useHijriDate({ date, coords, method, maghribTime }: UseHijriDateProps) {
+export function useHijriDate({ date, coords, method, maghribTime, now }: UseHijriDateProps) {
   // Return object: Text to display + Status (for UI trust)
   const [state, setState] = useState({ text: "", isEstimated: true });
+  // Calculate status on every render (tick)
+  // We use the passed 'now' or fallback to new Date()
+  const currentTime = now || new Date();
+  // 1. Maghrib Flip Logic
+  // Only flip if we are viewing "Today" AND it is after Maghrib
+  const isToday = currentTime.toDateString() === date.toDateString();
+  // Safety check for valid maghribTime
+  const isAfterMaghrib = !!(isToday && maghribTime && currentTime > maghribTime);
 
   useEffect(() => {
     if (!coords || typeof window === "undefined") return;
@@ -23,11 +32,8 @@ export function useHijriDate({ date, coords, method, maghribTime }: UseHijriDate
     // Flag to ignore stale responses
     let isActive = true;
 
-    // 1. Maghrib Flip Logic
-    // Only flip if we are viewing "Today" AND it is after Maghrib
-    const isToday = new Date().toDateString() === date.toDateString();
-    // Safety check for valid maghribTime
-    const isAfterMaghrib = isToday && maghribTime && !isNaN(maghribTime.getTime()) && new Date() > maghribTime;
+    // const isToday = new Date().toDateString() === date.toDateString();
+    // const isAfterMaghrib = isToday && maghribTime && !isNaN(maghribTime.getTime()) && new Date() > maghribTime;
 
     // Determine effective date (Tomorrow's Hijri date if after Maghrib)
     const effectiveDate = new Date(date);
@@ -99,7 +105,7 @@ export function useHijriDate({ date, coords, method, maghribTime }: UseHijriDate
     return () => {
       isActive = false;
     };
-  }, [date, coords, method, maghribTime]);
+  }, [date, coords, method, isAfterMaghrib]);
 
   return state;
 }

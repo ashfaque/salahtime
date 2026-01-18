@@ -37,7 +37,7 @@ export const MakruhCard = memo(function MakruhCard({ prayers, coords }: MakruhCa
       const safetyBuffer = MAKRUH_BUFFER_MINUTES;
 
       // Return total rounded minutes
-      console.log(`Makruh buffer at lat ${lat.toFixed(2)}°: ${Math.round(actualMinutes + safetyBuffer)} mins`);
+      // console.log(`Makruh buffer at lat ${lat.toFixed(2)}°: ${Math.round(actualMinutes + safetyBuffer)} mins`);
       return Math.round(actualMinutes + safetyBuffer);
     };
 

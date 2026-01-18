@@ -1,23 +1,40 @@
-src/
-├── app/
-│   ├── layout.tsx              # (Already exists) Sets up Fonts & Global CSS
-│   └── page.tsx                # (We will rewrite this today) The "Scroll Container"
-├── components/
-│   ├── layout/
-│   │   ├── Header.tsx          # App Icon, Calendar Btn, TZ Selector, Dark Mode
-│   │   └── Footer.tsx          # Copyright, ISNA method, Feedback
-│   └── ui/
-│       ├── ThemeToggle.tsx     # The "Night Mode" switch
-│       ├── Icon.tsx            # Wrapper for SVGs (Arrows, Calendar icon)
-│       └── ScrollArrow.tsx     # The Up/Down arrow button component
-├── modules/
-│   └── prayer/                 # THE CORE FEATURE
-│       ├── components/
-│       │   ├── PrayerHero.tsx  # The "Countdown" and "Next Prayer" view (Page 1)
-│       │   ├── PrayerTable.tsx # The "Invisible Table" list (Page 2)
-│       │   └── DateNav.tsx     # Left/Right arrows to change date
-│       ├── hooks/
-│       │   └── usePrayerTimes.ts # Logic: Uses 'adhan-js' to calculate times
-│       └── utils.ts            # Helpers: Format time (AM/PM), get User Timezone
-└── lib/
-    └── date-utils.ts           # Helpers for Calendar/Date manipulation
+src/                             # **Source code** directory.
+├── app/                         # **NextJS App Routing**. _(Keep this folder minimal)_
+│   ├── globals.css              # **Global CSS** file.
+│   ├── layout.tsx               # Project global structure. **Motherboard of the project**.
+│   ├── page.tsx                 # The "**Scroll Container**". Registered in _layout.tsx_.
+|   └── error.tsx                # Handle unexpected runtime errors.
+├── components/                  # Place where we keep all the **Global UI components**. _(.tsx files)_
+│   ├── layout/                  # **Sub-layouts** which we add in _page.tsx_. (Think of a _mini-motherboard_)
+│   │   ├── Header.tsx
+│   │   ├── SettingsModal.tsx
+│   │   └── Footer.tsx
+│   └── ui/                      # All reusable, modular, non-logical - **UI elements**.
+│       ├── Countdown.tsx
+│       ├── Icon.tsx
+│       ├── LocationBadge.tsx
+│       ├── Skeleton.tsx
+│       ├── StatusScreen.tsx
+│       └── Toast.tsx
+├── lib/                         # **Global Helpers**.
+│    ├── constants.ts
+│    ├── date-utils.ts
+│    ├── ipProviders.ts
+│    ├── locCache.ts
+│    └── storage.ts
+└── modules/                     # **Segregation of project's section as per business logic**.
+   └── prayer/                   # THE CORE MODULE.
+       ├── components/           # UI components. (.tsx files) for _prayer_ module only. Mostly each file are **individual page**.
+       │   ├── PrayerHero.tsx
+       │   ├── PrayerTable.tsx
+       │   ├── MakruhCard.tsx
+       │   └── DateNav.tsx
+       ├── hooks/                # **Business logic** of the _prayer_ module.
+       │   ├── useGeolocation.ts
+       │   ├── useHijriDate.ts
+       │   ├── useOnlineStatus.ts
+       │   ├── usePrayerTimes.ts
+       │   ├── useSettings.ts
+       │   ├── useSettings.ts
+       │   └── useTheme.ts
+       └── utils.ts              # **Helpers** for _prayer_ module.

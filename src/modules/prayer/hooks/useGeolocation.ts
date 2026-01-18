@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { Coordinates } from "adhan";
-import { fetchFromProviders } from "@/modules/prayer/lib/ipProviders";
+import { fetchFromProviders } from "@/lib/ipProviders";
 import { storage } from "@/lib/storage";
 import { DEFAULT_LOCATION, TIMEOUTS } from "@/lib/constants";
 
@@ -136,7 +136,7 @@ export function useGeolocation() {
             fetchPassiveLocation();
           }
         },
-        { enableHighAccuracy: true, timeout: TIMEOUTS.gpsHigh, maximumAge: 0 }
+        { enableHighAccuracy: true, timeout: TIMEOUTS.gpsHigh, maximumAge: 0 },
       );
     };
 
@@ -165,7 +165,7 @@ export function useGeolocation() {
             fetchPassiveLocation();
           }
         },
-        { enableHighAccuracy: false, timeout: TIMEOUTS.gpsLow, maximumAge: 0 }
+        { enableHighAccuracy: false, timeout: TIMEOUTS.gpsLow, maximumAge: 0 },
       );
     };
 

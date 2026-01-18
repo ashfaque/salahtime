@@ -264,3 +264,115 @@ Here is the logic summary for the "Forbidden (Makruh) Times" calculation in your
 * **Base Data:** Uses the exact `Sunrise`, `Dhuhr`, and `Maghrib` times calculated by the Adhan library for your location.
 * **Hardcoded Buffers:** The **15 min** (Sunrise/Sunset) and **10 min** (Zawal) buffers are standard safety margins used in Islamic jurisprudence to ensure the sun is clearly out of the forbidden zone.
 
+---
+
+## Developer Reference: React Architecture & Concepts
+
+### 📘 The "Under the Hood" Guide
+
+This project is built on **Next.js 15** and **React 19**. If you are new to React, the syntax can look like magic. This guide breaks down the "Invisible Machinery" that powers the application.
+
+#### 1. The "Holy Trinity" of Hooks (Logic & State)
+
+These three hooks control how data moves and when the screen updates.
+
+##### 📢 `useState`: The "Loud" Memory
+
+**Analogy:** A Loudspeaker.
+When you change a normal variable (`let x = 5`), React doesn't know. When you change a `useState` variable, it yells at React: *"Hey! I changed! Re-draw the screen now!"*
+
+* **Syntax:** `const [value, setValue] = useState(initialValue)`
+* **When to use:** Any data that the user needs to **SEE** on the screen (Clock numbers, Toggle buttons, API data).
+* **Gotcha:** Changing it causes the **entire** component to re-run (re-render).
+
+##### 🕵️ `useEffect`: The "Watchdog"
+
+**Analogy:** A Watchdog or Butler.
+React components are supposed to just show HTML. But sometimes you need to do "dirty work" (Start a timer, Fetch data, Check location). `useEffect` waits until the screen is painted, *then* does the work.
+
+* **Syntax:** `useEffect( () => { /* Code */ }, [ /* Dependency Array */ ] )`
+* **The Dependency Array `[]` is the Watchdog's Instruction List:**
+* **`[]` (Empty):** "Run this **ONCE** when the component is born, then never again." (e.g., Asking for GPS permission).
+* **`[variable]`:** "Watch this variable. Run the code **ONLY** if it changes." (e.g., Fetch Hijri date only when `date` changes).
+* ***(Missing)*:** "Run every single second." (⚠️ **Danger Zone**: This causes infinite loops and crashes).
+
+##### 📝 `useRef`: The "Secret" Memory
+
+**Analogy:** A Sticky Note in your pocket.
+Sometimes you need to remember something (like a Timer ID or the previous day's date), but you **don't** want to trigger a screen update.
+
+* **Syntax:** `const ref = useRef(initialValue)`
+* **How to use:** You must access it via `.current` (e.g., `ref.current = 5`).
+* **Superpower:** Changing it is **Silent**. React does not re-render. It is also used to "grab" HTML elements directly (like clicking a hidden file input).
+
+
+#### 2. The "Speed Team" (Performance)
+
+The `Home` component updates every second. We don't want the *entire* app to recalculate heavy math 60 times a minute. These tools stop that.
+
+##### 🛡️ `memo`: The Component Bouncer
+
+**Analogy:** A Club Bouncer.
+It stands outside a child component (like `<MakruhCard />`). When the parent updates, the Bouncer checks the "Props" (data passed down).
+
+* **If data is the same:** "You look the same as last time. Go away." (Skips re-render).
+* **If data changed:** "Okay, come on in." (Re-renders).
+
+##### 🧠 `useMemo`: The Math Genius (Notepad)
+
+**Analogy:** A Cheat Sheet / Notepad.
+Imagine a heavy math problem (like calculating 3D sun angles). You don't want to solve it every second.
+
+* **How it works:** `useMemo` solves it once and writes the answer on a notepad.
+* **The Trigger:** It only re-solves the math if the inputs (Coordinates/Date) change. Otherwise, it just hands you the answer from the notepad instantly.
+
+##### 🧊 `useCallback`: The Function Freezer
+
+**Analogy:** A Laminated Recipe Card.
+In JavaScript, every time a component re-renders, it creates **brand new functions**. This confuses the `memo` Bouncer (it thinks "New function = New data!").
+
+* **How it works:** `useCallback` laminates the function. It ensures the *exact same* function copy is used every time, keeping the Bouncer happy and the app fast.
+
+
+#### 3. The "Rule Book" (TypeScript)
+
+TypeScript acts as a contract to prevent the app from crashing.
+
+##### 🏷️ `type` (The Label Maker)
+
+**Analogy:** A Flexible Label.
+
+* **Best For:** Defining simple data, functions, or "Choices" (Unions).
+* **The Superpower (Union Types):** You can say: *"This status can ONLY be 'loading' OR 'success'."*
+```typescript
+type Status = "loading" | "success" | "error";
+
+```
+
+
+If you type `status = "waiting"`, the code won't even build. This prevents bugs before they happen.
+
+##### 🏗️ `interface` (The Blueprint)
+
+**Analogy:** An Architect's Blueprint.
+
+* **Best For:** Defining the strict shape of an Object (like a User profile or Settings).
+* **Why use it:** It looks cleaner for large objects and can be extended (like Classes).
+
+**Rule of Thumb:** Use `type` for almost everything in React (Props, State) because it's more flexible. Use `interface` if you are building a library or huge data models.
+
+
+#### 4. The "Game Loop" (How it runs)
+
+Here is the lifecycle of one second in `SalahTime`:
+
+1. **Tick:** The `setInterval` (inside `useEffect`) fires.
+2. **State Change:** It calls `setNow(new Date())`.
+3. **The Yell:** `useState` yells "RE-RENDER!"
+4. **The Render:** React runs the `Home()` function again.
+* **Math:** `useMemo` sees the date hasn't changed much -> Returns cached Prayer Times (0ms cost).
+* **Child Components:** `memo` sees the props haven't changed -> Skips rendering them (0ms cost).
+* **The Diff:** React sees only the **Countdown Text** is different.
+
+
+5. **The Paint:** React updates *only* those few text characters in the browser. The rest of the app stays asleep.

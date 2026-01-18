@@ -96,7 +96,7 @@ export const MakruhCard = memo(function MakruhCard({ prayers, coords }: MakruhCa
         {times.map((item) => (
           <div key={item.label} className="flex flex-col p-4 hover:bg-orange-500/10 transition-colors">
             <div className="flex justify-between items-center mb-1">
-              <span className="font-medium text-sm text-orange-700 dark:text-orange-400">{item.label}</span>
+              <span className="font-medium text-sm text-foreground/90">{item.label}</span>
               <span className="font-mono text-sm font-bold text-foreground/80">
                 {formatTime(item.start)} – {formatTime(item.end)}
               </span>

@@ -43,7 +43,7 @@ export function PrayerTable({ prayers, currentPrayerId, date }: PrayerTableProps
             prayers.map((prayer) => {
               // Check if this row is the active one
               // Adhan returns lowercase (dhuhr), our names are Title Case (Dhuhr)
-              const isActive = isToday && currentPrayerId === prayer.name.toLowerCase();
+              const isActive = isToday && currentPrayerId === prayer.name.toLowerCase() && !prayer.isSecondary;
 
               return (
                 <div

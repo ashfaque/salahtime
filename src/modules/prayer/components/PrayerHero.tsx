@@ -77,7 +77,7 @@ export function PrayerHero({ date, setDate, nextPrayer, currentPrayer, qibla, hi
         {/* 'text-foreground/60' makes it subtle. 'font-mono' gives it a clean data look. */}
         <span
           className={`text-sm font-mono -mt-1 tracking-wide flex items-center gap-2 transition-opacity duration-300
-            ${hijriData.isEstimated ? "text-foreground/40 italic" : "text-foreground/60"}
+            ${hijriData.isEstimated ? "text-foreground/75 italic" : "text-foreground/80"}
           `}
           title={hijriData.isEstimated ? "Estimated (Approximation)" : "Verified by Authority"}
         >
@@ -87,7 +87,7 @@ export function PrayerHero({ date, setDate, nextPrayer, currentPrayer, qibla, hi
         </span>
 
         {/* DISPLAY QIBLA */}
-        <span className="text-[10px] text-foreground/40 font-mono tracking-wider uppercase mt-1">QIBLA: {Math.round(qibla)}° N</span>
+        <span className="text-xs text-foreground/60 font-mono tracking-wider uppercase mt-1">QIBLA: {Math.round(qibla)}° N</span>
       </div>
 
       {/* Countdown Display */}
@@ -100,7 +100,7 @@ export function PrayerHero({ date, setDate, nextPrayer, currentPrayer, qibla, hi
             </div>
           ) : (
             <>
-              <p className="text-xl text-foreground/60">{currentPrayer && currentPrayer.name !== "Sunrise" ? `${currentPrayer.name} ends in:` : "Next Prayer in:"}</p>
+              <p className="text-xl text-foreground/70">{currentPrayer && currentPrayer.name !== "Sunrise" ? `${currentPrayer.name} ends in:` : "Next Prayer in:"}</p>
               <h1 className="text-6xl font-bold tracking-tight font-mono">
                 <Countdown targetDate={nextPrayer.time} />
               </h1>

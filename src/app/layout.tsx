@@ -57,7 +57,8 @@ export default function RootLayout({
   }
   return (
     <html lang="en" suppressHydrationWarning>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      {/* `select-none` disables text selection highlight, use `cursor-text select-text` on specific elements to enable text selection. */}
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased select-none`}>
         <ThemeScript />
         {children}
       </body>
